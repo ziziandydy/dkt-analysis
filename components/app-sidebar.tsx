@@ -56,16 +56,16 @@ const analysisTypes = [
     path: "/dashboard",
   },
   {
-    id: "campaign",
-    nameKey: "campaignAnalysis",
-    icon: LineChart,
-    path: "/campaign-analysis",
-  },
-  {
     id: "customer",
     nameKey: "customerAnalysis",
     icon: UserRound,
     path: "/customer-analysis",
+  },
+  {
+    id: "campaign",
+    nameKey: "campaignAnalysis",
+    icon: LineChart,
+    path: "/campaign-analysis",
   },
 ]
 
