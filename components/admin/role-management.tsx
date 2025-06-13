@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Edit, MoreHorizontal, Plus, Trash, Users } from "lucide-react"
+import { Edit, MoreHorizontal, Plus, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -396,39 +396,6 @@ export function RoleManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Assignment</CardTitle>
-            <CardDescription>Assign roles to users</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Assign roles to users to control their access to features and data.
-            </p>
-            <Button variant="outline" className="mt-4">
-              <Users className="mr-2 h-4 w-4" />
-              Manage User Roles
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Templates</CardTitle>
-            <CardDescription>Create and manage role templates</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Create role templates to quickly assign common permission sets to new roles.
-            </p>
-            <Button variant="outline" className="mt-4">
-              Manage Templates
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   )
 }
