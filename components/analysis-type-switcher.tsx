@@ -17,10 +17,10 @@ const analysisTypes = [
     path: "/dashboard",
   },
   {
-    id: "customer",
-    nameKey: "customerAnalysis",
+    id: "site",
+    nameKey: "siteAnalysis",
     icon: UserRound,
-    path: "/customer-analysis",
+    path: "/site-analysis",
   },
   {
     id: "campaign",
@@ -37,7 +37,7 @@ export function AnalysisTypeSwitcher() {
 
   const currentAnalysisType = React.useMemo(() => {
     if (pathname.includes("campaign-analysis")) return analysisTypes[2]
-    if (pathname.includes("customer-analysis")) return analysisTypes[1]
+    if (pathname.includes("site-analysis")) return analysisTypes[1]
     return analysisTypes[0]
   }, [pathname])
 

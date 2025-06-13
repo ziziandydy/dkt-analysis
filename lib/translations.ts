@@ -1,6 +1,7 @@
 export type TranslationKey =
   | "pretargetingAnalysis"
   | "campaignAnalysis"
+  | "siteAnalysis"
   | "customerAnalysis"
   | "exploreAudiences"
   | "coreKeywords"
@@ -156,6 +157,10 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
   campaignAnalysis: {
     en: "Campaign Analysis",
     zh: "廣告活動分析",
+  },
+  siteAnalysis: {
+    en: "Site Analysis",
+    zh: "網站分析",
   },
   customerAnalysis: {
     en: "Customer Analysis",

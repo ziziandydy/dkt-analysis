@@ -31,7 +31,7 @@ const data = [
   { name: "其他", value: 30 },
 ]
 
-export function CustomerAnalysis() {
+export function SiteAnalysis() {
   const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState("data-import")
 

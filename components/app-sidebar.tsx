@@ -56,10 +56,10 @@ const analysisTypes = [
     path: "/dashboard",
   },
   {
-    id: "customer",
-    nameKey: "customerAnalysis",
+    id: "site",
+    nameKey: "siteAnalysis",
     icon: UserRound,
-    path: "/customer-analysis",
+    path: "/site-analysis",
   },
   {
     id: "campaign",
