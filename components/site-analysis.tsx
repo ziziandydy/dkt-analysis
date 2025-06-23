@@ -1,49 +1,84 @@
 "use client"
 
 import { useState } from "react"
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts"
-import { Save, Edit, Check, X, Code } from "lucide-react"
+import { Edit, Check, X, Code, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { SettingsSelectors } from "@/components/settings-selectors"
 import { useTranslation } from "@/hooks/use-translation"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Switch } from "@/components/ui/switch"
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#22B14C", "#6A21CB", "#E91E63", "#9C27B0"]
 
-const data = [
-  { name: "男性", value: 40 },
-  { name: "女性", value: 30 },
-  { name: "其他", value: 30 },
-]
-
 export function SiteAnalysis() {
   const { t } = useTranslation()
-  const [activeTab, setActiveTab] = useState("data-import")
+  const [activeTab, setActiveTab] = useState("customer-insights")
 
   const [selectedWebsite, setSelectedWebsite] = useState<any>(null)
-  const [isEditingWebsite, setIsEditingWebsite] = useState(false)
+  const [showWebsiteSettings, setShowWebsiteSettings] = useState(false)
   const [editedName, setEditedName] = useState("")
   const [editedUrl, setEditedUrl] = useState("")
 
-  const [showTrackingCode, setShowTrackingCode] = useState(false)
+  const [showTrackingManagement, setShowTrackingManagement] = useState(false)
+  const [isEditingTrackingId, setIsEditingTrackingId] = useState(false)
+  const [editedTrackingId, setEditedTrackingId] = useState("")
+  const [currentTrackingId, setCurrentTrackingId] = useState("DKT-2024-TRK-001")
+
+  const [showAddSite, setShowAddSite] = useState(false)
+  const [newSiteName, setNewSiteName] = useState("")
+  const [newSiteDomain, setNewSiteDomain] = useState("")
+  const [newSiteTrackingId, setNewSiteTrackingId] = useState("")
+  const [websites, setWebsites] = useState([
+    {
+      id: 1,
+      name: "電商主站",
+      url: "https://shop.example.com",
+      description: "主要電商網站",
+      status: "active",
+      lastSync: "2024-01-15 14:30",
+      visitors: "125,842",
+      accountId: "SA-2024-001",
+    },
+    {
+      id: 2,
+      name: "品牌官網",
+      url: "https://brand.example.com",
+      description: "品牌形象網站",
+      status: "active",
+      lastSync: "2024-01-15 12:15",
+      visitors: "45,231",
+      accountId: "SA-2024-002",
+    },
+    {
+      id: 3,
+      name: "部落格",
+      url: "https://blog.example.com",
+      description: "內容行銷部落格",
+      status: "inactive",
+      lastSync: "2024-01-10 09:20",
+      visitors: "18,567",
+      accountId: "SA-2024-003",
+    },
+  ])
 
   const [selectedTopic, setSelectedTopic] = useState<any>(null)
   const [selectedPersona, setSelectedPersona] = useState<any>(null)
+
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [verificationStatus, setVerificationStatus] = useState<"idle" | "listening" | "received" | "timeout">("idle")
+  const [lastEvent, setLastEvent] = useState<any>(null)
+  const [verificationTimer, setVerificationTimer] = useState<NodeJS.Timeout | null>(null)
+  const [showWooCommerceManagement, setShowWooCommerceManagement] = useState(false)
+
+  // Mock data with translations
+  const genderData = [
+    { name: t("male"), value: 40 },
+    { name: t("female"), value: 30 },
+    { name: t("other"), value: 30 },
+  ]
 
   // Mock topics data
   const mockTopics = [
@@ -240,54 +275,140 @@ export function SiteAnalysis() {
     },
   ]
 
-  // Mock website data
-  const websites = [
-    {
-      id: 1,
-      name: "電商主站",
-      url: "https://shop.example.com",
-      description: "主要電商網站",
-      status: "active",
-      lastSync: "2024-01-15 14:30",
-      visitors: "125,842",
-    },
-    {
-      id: 2,
-      name: "品牌官網",
-      url: "https://brand.example.com",
-      description: "品牌形象網站",
-      status: "active",
-      lastSync: "2024-01-15 12:15",
-      visitors: "45,231",
-    },
-    {
-      id: 3,
-      name: "部落格",
-      url: "https://blog.example.com",
-      description: "內容行銷部落格",
-      status: "inactive",
-      lastSync: "2024-01-10 09:20",
-      visitors: "18,567",
-    },
-  ]
-
-  const handleEditWebsite = () => {
+  const handleOpenSettings = () => {
     setEditedName(selectedWebsite.name)
     setEditedUrl(selectedWebsite.url)
-    setIsEditingWebsite(true)
+    setShowWebsiteSettings(true)
   }
 
-  const handleSaveWebsite = () => {
+  const handleSaveSettings = () => {
     setSelectedWebsite({
       ...selectedWebsite,
       name: editedName,
       url: editedUrl,
     })
-    setIsEditingWebsite(false)
+    setShowWebsiteSettings(false)
   }
 
-  const handleCancelEdit = () => {
-    setIsEditingWebsite(false)
+  const handleCancelSettings = () => {
+    setShowWebsiteSettings(false)
+  }
+
+  const handleEditTrackingId = () => {
+    setEditedTrackingId(currentTrackingId)
+    setIsEditingTrackingId(true)
+  }
+
+  const handleSaveTrackingId = () => {
+    setCurrentTrackingId(editedTrackingId)
+    setIsEditingTrackingId(false)
+  }
+
+  const handleCancelEditTrackingId = () => {
+    setIsEditingTrackingId(false)
+  }
+
+  const handleAddSite = () => {
+    if (!newSiteName.trim() || !newSiteDomain.trim()) {
+      return
+    }
+
+    const newId = Math.max(...websites.map((w) => w.id)) + 1
+    const newAccountId = `SA-2024-${String(newId).padStart(3, "0")}`
+
+    // Ensure domain starts with https:// if not provided
+    let formattedDomain = newSiteDomain.trim()
+    if (!formattedDomain.startsWith("http://") && !formattedDomain.startsWith("https://")) {
+      formattedDomain = `https://${formattedDomain}`
+    }
+
+    const newSite = {
+      id: newId,
+      name: newSiteName.trim(),
+      url: formattedDomain,
+      description: `${newSiteName.trim()} website`,
+      status: "active",
+      lastSync: new Date()
+        .toLocaleString("sv-SE", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+        .replace("T", " "),
+      visitors: "0",
+      accountId: newAccountId,
+    }
+
+    setWebsites([...websites, newSite])
+
+    // Reset form
+    setNewSiteName("")
+    setNewSiteDomain("")
+    setNewSiteTrackingId("")
+    setShowAddSite(false)
+  }
+
+  const handleCancelAddSite = () => {
+    setNewSiteName("")
+    setNewSiteDomain("")
+    setNewSiteTrackingId("")
+    setShowAddSite(false)
+  }
+
+  const handleStartVerification = () => {
+    setIsVerifying(true)
+    setVerificationStatus("listening")
+    setLastEvent(null)
+
+    // Simulate receiving tracking events after a random delay
+    const timer = setTimeout(
+      () => {
+        const mockEvents = [
+          {
+            type: "page_view",
+            timestamp: new Date().toISOString(),
+            details: { page: "/home", user_agent: "Mozilla/5.0..." },
+          },
+          {
+            type: "button_click",
+            timestamp: new Date().toISOString(),
+            details: { button_id: "signup_button", button_text: "立即註冊" },
+          },
+          {
+            type: "form_submit",
+            timestamp: new Date().toISOString(),
+            details: { form_id: "contact_form", form_name: "聯絡表單" },
+          },
+        ]
+
+        const randomEvent = mockEvents[Math.floor(Math.random() * mockEvents.length)]
+        setLastEvent(randomEvent)
+        setVerificationStatus("received")
+      },
+      Math.random() * 5000 + 2000,
+    ) // Random delay between 2-7 seconds
+
+    setVerificationTimer(timer)
+
+    // Set timeout after 15 seconds
+    setTimeout(() => {
+      if (verificationStatus === "listening") {
+        setVerificationStatus("timeout")
+      }
+      setIsVerifying(false)
+    }, 15000)
+  }
+
+  const handleStopVerification = () => {
+    if (verificationTimer) {
+      clearTimeout(verificationTimer)
+      setVerificationTimer(null)
+    }
+    setIsVerifying(false)
+    setVerificationStatus("idle")
+    setLastEvent(null)
   }
 
   return (
@@ -299,46 +420,36 @@ export function SiteAnalysis() {
               <>
                 <div className="flex items-center gap-2 mb-2">
                   <Button variant="ghost" size="sm" onClick={() => setSelectedWebsite(null)} className="p-0 h-auto">
-                    ← 返回網站列表
+                    {t("returnToWebsiteList")}
                   </Button>
                 </div>
-                {isEditingWebsite ? (
-                  <div className="space-y-2">
-                    <Input
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      className="text-2xl font-bold h-auto py-1"
-                    />
-                    <Input
-                      value={editedUrl}
-                      onChange={(e) => setEditedUrl(e.target.value)}
-                      className="text-muted-foreground h-auto py-1"
-                    />
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={handleSaveWebsite}>
-                        <Check className="h-4 w-4 mr-1" /> 儲存
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={handleCancelEdit}>
-                        <X className="h-4 w-4 mr-1" /> 取消
-                      </Button>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="flex items-center gap-3 mb-1">
+                      <h1 className="text-3xl font-bold">{selectedWebsite.name}</h1>
+                      <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
+                        {t("siteAccountId")}: {selectedWebsite.accountId}
+                      </span>
                     </div>
+                    <p className="text-muted-foreground">{selectedWebsite.url}</p>
                   </div>
-                ) : (
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h1 className="text-3xl font-bold mb-1">{selectedWebsite.name}</h1>
-                      <p className="text-muted-foreground">{selectedWebsite.url}</p>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={handleEditWebsite}>
-                      <Edit className="h-4 w-4 mr-1" /> 編輯
-                    </Button>
-                  </div>
-                )}
+                  <Button variant="ghost" size="sm" onClick={() => setShowWebsiteSettings(true)}>
+                    <Edit className="h-4 w-4 mr-1" /> {t("settings")}
+                  </Button>
+                </div>
               </>
             ) : (
               <>
-                <h1 className="text-3xl font-bold mb-2">{t("customerAnalysis")}</h1>
-                <p className="text-muted-foreground">選擇要分析的網站</p>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h1 className="text-3xl font-bold mb-2">{t("siteAnalysis")}</h1>
+                    <p className="text-muted-foreground">{t("selectWebsiteToAnalyze")}</p>
+                  </div>
+                  <Button onClick={() => setShowAddSite(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t("addSite")}
+                  </Button>
+                </div>
               </>
             )}
           </div>
@@ -352,9 +463,9 @@ export function SiteAnalysis() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{selectedWebsite ? "Customer Analysis" : "網站列表"}</CardTitle>
+          <CardTitle>{selectedWebsite ? t("siteAnalysis") : t("websiteList")}</CardTitle>
           <CardDescription>
-            {selectedWebsite ? "管理和分析您的客戶數據，實現個人化行銷" : "選擇要進行客戶分析的網站"}
+            {selectedWebsite ? "管理和分析您的客戶數據，實現個人化行銷" : t("selectWebsiteForAnalysis")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -375,7 +486,7 @@ export function SiteAnalysis() {
                             website.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {website.status === "active" ? "運行中" : "未啟用"}
+                          {website.status === "active" ? t("running") : t("inactive")}
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-1">{website.url}</p>
@@ -383,539 +494,368 @@ export function SiteAnalysis() {
                     </div>
                     <div className="text-right">
                       <p className="font-medium">{website.visitors}</p>
-                      <p className="text-xs text-muted-foreground">總訪客數</p>
-                      <p className="text-xs text-muted-foreground mt-1">最後同步: {website.lastSync}</p>
+                      <p className="text-xs text-muted-foreground">{t("totalVisitors")}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {t("lastSync")}: {website.lastSync}
+                      </p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            // Updated Tabs content with removed tabs
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-4">
-                <TabsTrigger value="data-import">Data Import</TabsTrigger>
-                <TabsTrigger value="customer-insights">Customer Insights</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="data-import">
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-medium">Data Import Settings</h3>
-                    <Button variant="outline" size="sm">
-                      <Save className="h-4 w-4 mr-2" />
-                      儲存設定
-                    </Button>
+            <div className="space-y-6">
+              {/* Simplified Hero Section */}
+              <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-2">
+                    <h1 className="text-3xl font-bold text-gray-900">{selectedWebsite.name}</h1>
+                    <p className="text-lg text-gray-600">{selectedWebsite.url}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-500">{t("siteAccountId")}:</span>
+                      <span className="text-sm font-mono bg-white px-3 py-1 rounded border">
+                        {selectedWebsite.accountId}
+                      </span>
+                    </div>
                   </div>
-
-                  <div className="grid gap-6">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">網站追蹤碼</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div
-                            className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                            onClick={() => setShowTrackingCode(true)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <rect width="20" height="16" x="2" y="4" rx="2" />
-                                  <path d="M22 7L13.03 12.27a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                </svg>
-                              </div>
-                              <div>
-                                <p className="font-medium">網站</p>
-                                <p className="text-xs text-muted-foreground">收集網站訪客行為數據</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="h-4 w-8 rounded-full bg-primary mr-2"></div>
-                              <span className="text-sm">已啟用</span>
-                              <Code className="ml-2 h-4 w-4 text-muted-foreground" />
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                  <Button variant="ghost" size="sm" onClick={handleOpenSettings}>
+                    <Edit className="h-4 w-4 mr-1" /> {t("settings")}
+                  </Button>
                 </div>
-              </TabsContent>
+              </div>
 
-              <TabsContent value="customer-insights">
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-medium">客戶洞察</h3>
-                    <select className="px-3 py-1 border rounded-md">
-                      <option>過去30天</option>
-                      <option>過去90天</option>
-                      <option>過去12個月</option>
-                      <option>自訂時間範圍</option>
-                    </select>
+              {/* Customer Insights - Always Visible */}
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-2xl font-bold">{t("customerInsights")}</h2>
+                    <p className="text-muted-foreground">{t("analyzeCustomerBehaviorAndDemographics")}</p>
                   </div>
+                  <select className="px-3 py-2 border rounded-md bg-background">
+                    <option>過去30天</option>
+                    <option>過去90天</option>
+                    <option>過去12個月</option>
+                    <option>自訂時間範圍</option>
+                  </select>
+                </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">總客戶數</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold">125,842</div>
-                        <p className="text-xs text-muted-foreground">較前期 +5.2%</p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">新客戶數</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold">8,547</div>
-                        <p className="text-xs text-muted-foreground">較前期 +12.8%</p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">活躍客戶數</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold">42,651</div>
-                        <p className="text-xs text-muted-foreground">較前期 +3.5%</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-
+                {/* Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Card>
-                    <CardHeader>
-                      <CardTitle>客戶來源分布</CardTitle>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{t("totalCustomers")}</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={[
-                            { source: "直接訪問", value: 35 },
-                            { source: "搜尋引擎", value: 25 },
-                            { source: "社群媒體", value: 20 },
-                            { source: "電子郵件", value: 10 },
-                            { source: "廣告", value: 8 },
-                            { source: "其他", value: 2 },
-                          ]}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="source" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="value" name="客戶數百分比" fill="#8884d8" />
-                        </BarChart>
-                      </ResponsiveContainer>
+                    <CardContent>
+                      <div className="text-3xl font-bold">125,842</div>
+                      <p className="text-xs text-muted-foreground">{t("comparedToPrevious")} +5.2%</p>
                     </CardContent>
                   </Card>
-
                   <Card>
-                    <CardHeader>
-                      <CardTitle>客戶生命週期階段</CardTitle>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{t("newCustomers")}</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={[
-                            { stage: "認知階段", value: 30 },
-                            { stage: "考慮階段", value: 25 },
-                            { stage: "購買階段", value: 20 },
-                            { stage: "保留階段", value: 15 },
-                            { stage: "忠誠階段", value: 10 },
-                          ]}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="stage" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="value" name="客戶數百分比" fill="#82ca9d" />
-                        </BarChart>
-                      </ResponsiveContainer>
+                    <CardContent>
+                      <div className="text-3xl font-bold">8,547</div>
+                      <p className="text-xs text-muted-foreground">{t("comparedToPrevious")} +12.8%</p>
                     </CardContent>
                   </Card>
-
                   <Card>
-                    <CardHeader>
-                      <CardTitle>客戶價值分析</CardTitle>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{t("activeCustomers")}</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={[
-                            { segment: "高價值客戶", value: 15, ltv: 25000 },
-                            { segment: "中高價值客戶", value: 25, ltv: 15000 },
-                            { segment: "中價值客戶", value: 35, ltv: 8000 },
-                            { segment: "低價值客戶", value: 25, ltv: 3000 },
-                          ]}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="segment" />
-                          <YAxis yAxisId="left" orientation="left" />
-                          <YAxis yAxisId="right" orientation="right" />
-                          <Tooltip />
-                          <Legend />
-                          <Bar yAxisId="left" dataKey="value" name="客戶數百分比" fill="#8884d8" />
-                          <Bar yAxisId="right" dataKey="ltv" name="平均終身價值" fill="#82ca9d" />
-                        </BarChart>
-                      </ResponsiveContainer>
+                    <CardContent>
+                      <div className="text-3xl font-bold">42,651</div>
+                      <p className="text-xs text-muted-foreground">{t("comparedToPrevious")} +3.5%</p>
                     </CardContent>
                   </Card>
+                </div>
 
-                  {/* Popular Topics Section */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">熱門主題</h3>
-                    {!selectedTopic ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {mockTopics.map((topic, i) => (
-                          <Card
-                            key={i}
-                            className="cursor-pointer hover:shadow-md transition-shadow"
-                            onClick={() => setSelectedTopic(topic)}
-                          >
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-base">{topic.name}</CardTitle>
-                              <CardDescription>{topic.count.toLocaleString()} 相關用戶</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">點擊查看詳情</span>
-                                <div className="text-lg font-semibold text-primary">{topic.percentage}%</div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                {/* Popular Topics Section */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">{t("popularTopics")}</h3>
+                  {!selectedTopic ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {mockTopics.map((topic, i) => (
+                        <Card
+                          key={i}
+                          className="cursor-pointer hover:shadow-md transition-shadow"
+                          onClick={() => setSelectedTopic(topic)}
+                        >
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base">{topic.name}</CardTitle>
+                            <CardDescription>
+                              {topic.count.toLocaleString()} {t("relatedUsers")}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-muted-foreground">{t("clickForDetails")}</span>
+                              <div className="text-lg font-semibold text-primary">{topic.percentage}%</div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedTopic(null)}>
+                          {t("returnToTopicList")}
+                        </Button>
+                        <h4 className="text-lg font-medium">{selectedTopic.name}</h4>
                       </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => setSelectedTopic(null)}>
-                            ← 返回主題列表
-                          </Button>
-                          <h4 className="text-lg font-medium">{selectedTopic.name}</h4>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Card>
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                              <CardTitle className="text-base">熱門關鍵字</CardTitle>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  navigator.clipboard.writeText(selectedTopic.keywords.join(", "))
-                                  // You could add a toast notification here
-                                }}
-                              >
-                                複製所有關鍵字
-                              </Button>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="flex flex-wrap gap-2">
-                                {selectedTopic.keywords.map((keyword, j) => (
-                                  <span key={j} className="bg-muted text-sm px-3 py-1.5 rounded-md">
-                                    {keyword}
-                                  </span>
-                                ))}
-                              </div>
-                            </CardContent>
-                          </Card>
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-base">熱門文章</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="space-y-3">
-                                {selectedTopic.articles.map((article, j) => (
-                                  <div key={j} className="border-b pb-2 last:border-0">
-                                    <h5 className="font-medium text-sm">{article.title}</h5>
-                                    <p className="text-xs text-muted-foreground">{article.source}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Marketing Personas Section */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">市場人設</h3>
-                    {!selectedPersona ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {mockPersonas.map((persona, i) => (
-                          <Card
-                            key={i}
-                            className="cursor-pointer hover:shadow-md transition-shadow"
-                            onClick={() => setSelectedPersona(persona)}
-                          >
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-base">{persona.name}</CardTitle>
-                              <CardDescription>{persona.size.toLocaleString()} 人</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">點擊查看詳情</span>
-                                <div className="text-lg font-semibold text-primary">{persona.percentage}%</div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => setSelectedPersona(null)}>
-                            ← 返回人設列表
-                          </Button>
-                          <h4 className="text-lg font-medium">{selectedPersona.name}</h4>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Card>
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                              <CardTitle className="text-base">關鍵字</CardTitle>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  navigator.clipboard.writeText(selectedPersona.keywords.join(", "))
-                                  // You could add a toast notification here
-                                }}
-                              >
-                                複製所有關鍵字
-                              </Button>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="flex flex-wrap gap-2">
-                                {selectedPersona.keywords.map((keyword, j) => (
-                                  <span key={j} className="bg-muted text-sm px-3 py-1.5 rounded-md">
-                                    {keyword}
-                                  </span>
-                                ))}
-                              </div>
-                            </CardContent>
-                          </Card>
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-base">經常瀏覽的文章</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="space-y-3">
-                                {selectedPersona.articles.map((article, j) => (
-                                  <div key={j} className="border-b pb-2 last:border-0">
-                                    <h5 className="font-medium text-sm">{article.title}</h5>
-                                    <p className="text-xs text-muted-foreground">{article.source}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Audience Demographics Section */}
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-medium">訪客人種統計</h3>
-
-                    {/* Age Distribution */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-base">年齡分佈</CardTitle>
-                      </CardHeader>
-                      <CardContent className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart
-                            data={[
-                              { ageGroup: "18-24", value: 15 },
-                              { ageGroup: "25-34", value: 25 },
-                              { ageGroup: "35-44", value: 20 },
-                              { ageGroup: "45-54", value: 15 },
-                              { ageGroup: "55-64", value: 10 },
-                              { ageGroup: "65+", value: 5 },
-                            ]}
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                          >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="ageGroup" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="value" name="訪客數百分比" fill="#8884d8" />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </CardContent>
-                    </Card>
-
-                    {/* Gender Distribution */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-base">性別分佈</CardTitle>
-                      </CardHeader>
-                      <CardContent className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={data}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                              outerRadius={80}
-                              fill="#8884d8"
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-base">{t("popularKeywords")}</CardTitle>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                navigator.clipboard.writeText(selectedTopic.keywords.join(", "))
+                              }}
                             >
-                              {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              {t("copyAllKeywords")}
+                            </Button>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedTopic.keywords.map((keyword, j) => (
+                                <span key={j} className="bg-muted text-sm px-3 py-1.5 rounded-md">
+                                  {keyword}
+                                </span>
                               ))}
-                            </Pie>
-                            <Tooltip />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </CardContent>
-                    </Card>
-
-                    {/* MBTI Distribution */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-base">MBTI分佈</CardTitle>
-                        <CardDescription>四個維度的人格偏好分析</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {/* Extroversion vs Introversion */}
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-center">外向型 vs 內向型</h4>
-                            <ResponsiveContainer width="100%" height={200}>
-                              <BarChart
-                                data={[
-                                  { type: "外向型 (E)", value: 58 },
-                                  { type: "內向型 (I)", value: 42 },
-                                ]}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                              >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="type" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="value" fill="#8884d8" />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-
-                          {/* Sensing vs Intuition */}
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-center">感覺型 vs 直覺型</h4>
-                            <ResponsiveContainer width="100%" height={200}>
-                              <BarChart
-                                data={[
-                                  { type: "感覺型 (S)", value: 46 },
-                                  { type: "直覺型 (N)", value: 54 },
-                                ]}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                              >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="type" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="value" fill="#00C49F" />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-
-                          {/* Thinking vs Feeling */}
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-center">思考型 vs 情感型</h4>
-                            <ResponsiveContainer width="100%" height={200}>
-                              <BarChart
-                                data={[
-                                  { type: "思考型 (T)", value: 62 },
-                                  { type: "情感型 (F)", value: 38 },
-                                ]}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                              >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="type" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="value" fill="#FFBB28" />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-
-                          {/* Judging vs Perceiving */}
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-center">判斷型 vs 感知型</h4>
-                            <ResponsiveContainer width="100%" height={200}>
-                              <BarChart
-                                data={[
-                                  { type: "判斷型 (J)", value: 51 },
-                                  { type: "感知型 (P)", value: 49 },
-                                ]}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                              >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="type" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="value" fill="#FF8042" />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-base">{t("popularArticles")}</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-3">
+                              {selectedTopic.articles.map((article, j) => (
+                                <div key={j} className="border-b pb-2 last:border-0">
+                                  <h5 className="font-medium text-sm">{article.title}</h5>
+                                  <p className="text-xs text-muted-foreground">{article.source}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </TabsContent>
-            </Tabs>
+
+                {/* Marketing Personas Section */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">{t("marketingPersonas")}</h3>
+                  {!selectedPersona ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {mockPersonas.map((persona, i) => (
+                        <Card
+                          key={i}
+                          className="cursor-pointer hover:shadow-md transition-shadow"
+                          onClick={() => setSelectedPersona(persona)}
+                        >
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base">{persona.name}</CardTitle>
+                            <CardDescription>
+                              {persona.size.toLocaleString()} {t("people")}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-muted-foreground">{t("clickForDetails")}</span>
+                              <div className="text-lg font-semibold text-primary">{persona.percentage}%</div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedPersona(null)}>
+                          {t("returnToPersonaList")}
+                        </Button>
+                        <h4 className="text-lg font-medium">{selectedPersona.name}</h4>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-base">{t("keywords")}</CardTitle>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                navigator.clipboard.writeText(selectedPersona.keywords.join(", "))
+                              }}
+                            >
+                              {t("copyAllKeywords")}
+                            </Button>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedPersona.keywords.map((keyword, j) => (
+                                <span key={j} className="bg-muted text-sm px-3 py-1.5 rounded-md">
+                                  {keyword}
+                                </span>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-base">{t("frequentlyViewedArticles")}</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-3">
+                              {selectedPersona.articles.map((article, j) => (
+                                <div key={j} className="border-b pb-2 last:border-0">
+                                  <h5 className="font-medium text-sm">{article.title}</h5>
+                                  <p className="text-xs text-muted-foreground">{article.source}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Tracking Code Dialog with Scroll */}
-      <Dialog open={showTrackingCode} onOpenChange={setShowTrackingCode}>
+      {/* Add Site Dialog */}
+      <Dialog open={showAddSite} onOpenChange={setShowAddSite}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("addNewSite")}</DialogTitle>
+            <DialogDescription>{t("addSiteDescription")}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="siteName">{t("websiteName")}</Label>
+              <Input
+                id="siteName"
+                value={newSiteName}
+                onChange={(e) => setNewSiteName(e.target.value)}
+                placeholder={t("siteNamePlaceholder")}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="siteDomain">{t("websiteDomain")}</Label>
+              <Input
+                id="siteDomain"
+                value={newSiteDomain}
+                onChange={(e) => setNewSiteDomain(e.target.value)}
+                placeholder={t("domainPlaceholder")}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="siteTrackingId">
+                {t("trackingIdOptional")} <span className="text-muted-foreground">({t("optional")})</span>
+              </Label>
+              <Input
+                id="siteTrackingId"
+                value={newSiteTrackingId}
+                onChange={(e) => setNewSiteTrackingId(e.target.value)}
+                placeholder={t("trackingIdPlaceholder")}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={handleCancelAddSite}>
+                {t("cancel")}
+              </Button>
+              <Button onClick={handleAddSite} disabled={!newSiteName.trim() || !newSiteDomain.trim()}>
+                {t("addSite")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tracking Management Dialog */}
+      <Dialog open={showTrackingManagement} onOpenChange={setShowTrackingManagement}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader className="flex-shrink-0">
-            <DialogTitle>網站追蹤碼</DialogTitle>
-            <DialogDescription>將以下代碼添加到您的網站以啟用數據收集</DialogDescription>
+            <DialogTitle>{t("trackingCodeManagement")}</DialogTitle>
+            <DialogDescription>{t("manageTrackingCode")}</DialogDescription>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+            {/* Account and Tracking ID Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("accountIdLabel")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-lg font-mono">{selectedWebsite?.accountId}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                  <CardTitle className="text-base">{t("trackingIdLabel")}</CardTitle>
+                  {!isEditingTrackingId && (
+                    <Button variant="outline" size="sm" onClick={handleEditTrackingId}>
+                      <Edit className="h-4 w-4 mr-1" /> {t("edit")}
+                    </Button>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  {isEditingTrackingId ? (
+                    <div className="space-y-2">
+                      <Input
+                        value={editedTrackingId}
+                        onChange={(e) => setEditedTrackingId(e.target.value)}
+                        className="font-mono"
+                      />
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={handleSaveTrackingId}>
+                          <Check className="h-4 w-4 mr-1" /> {t("save")}
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={handleCancelEditTrackingId}>
+                          <X className="h-4 w-4 mr-1" /> {t("cancel")}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-lg font-mono">{currentTrackingId}</div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Basic Tracking Code */}
             <div>
-              <h4 className="text-sm font-medium mb-2">基本追蹤碼</h4>
+              <h4 className="text-sm font-medium mb-2">{t("basicTrackingCode")}</h4>
               <div className="relative">
                 <pre className="bg-muted p-4 rounded-md overflow-x-auto text-xs">
                   {`<!-- DKT Analytics Tracking Code -->
 <script>
-  (function(d,k,t){
-    var s=d.createElement('script');
-    s.async=true;
-    s.src='https://cdn.dktanalytics.com/tracker.js?id=${selectedWebsite?.id || "YOUR_SITE_ID"}';
-    var f=d.getElementsByTagName('script')[0];
-    f.parentNode.insertBefore(s,f);
-  })(document,window,'dkt');
-  
-  dkt('init', '${selectedWebsite?.id || "YOUR_SITE_ID"}');
-  dkt('trackPageview');
+(function(d,k,t){
+  var s=d.createElement('script');
+  s.async=true;
+  s.src='https://cdn.dktanalytics.com/tracker.js?id=${currentTrackingId}';
+  var f=d.getElementsByTagName('script')[0];
+  f.parentNode.insertBefore(s,f);
+})(document,window,'dkt');
+
+window.dkt = window.dkt || function() {
+  (window.dkt.q = window.dkt.q || []).push(arguments);
+};
+window.dkt('init', '${currentTrackingId}');
+window.dkt('trackPageview');
 </script>
 <!-- End DKT Analytics Tracking Code -->`}
                 </pre>
@@ -926,107 +866,111 @@ export function SiteAnalysis() {
                   onClick={() => {
                     navigator.clipboard.writeText(`<!-- DKT Analytics Tracking Code -->
 <script>
-  (function(d,k,t){
-    var s=d.createElement('script');
-    s.async=true;
-    s.src='https://cdn.dktanalytics.com/tracker.js?id=${selectedWebsite?.id || "YOUR_SITE_ID"}';
-    var f=d.getElementsByTagName('script')[0];
-    f.parentNode.insertBefore(s,f);
-  })(document,window,'dkt');
-  
-  dkt('init', '${selectedWebsite?.id || "YOUR_SITE_ID"}');
-  dkt('trackPageview');
+(function(d,k,t){
+  var s=d.createElement('script');
+  s.async=true;
+  s.src='https://cdn.dktanalytics.com/tracker.js?id=${currentTrackingId}';
+  var f=d.getElementsByTagName('script')[0];
+  f.parentNode.insertBefore(s,f);
+})(document,window,'dkt');
+
+window.dkt = window.dkt || function() {
+  (window.dkt.q = window.dkt.q || []).push(arguments);
+};
+window.dkt('init', '${currentTrackingId}');
+window.dkt('trackPageview');
 </script>
 <!-- End DKT Analytics Tracking Code -->`)
                   }}
                 >
-                  複製
+                  {t("copy")}
                 </Button>
               </div>
             </div>
 
+            {/* Event Tracking Code */}
             <div>
-              <h4 className="text-sm font-medium mb-2">事件追蹤碼</h4>
+              <h4 className="text-sm font-medium mb-2">{t("eventTrackingCode")}</h4>
               <div className="relative">
                 <pre className="bg-muted p-4 rounded-md overflow-x-auto text-xs">
                   {`// 追蹤按鈕點擊
-dkt('trackEvent', 'button_click', {
-  button_id: 'signup_button',
-  button_text: '立即註冊'
+window.dkt('trackEvent', 'button_click', {
+button_id: 'signup_button',
+button_text: '立即註冊'
 });
 
 // 追蹤表單提交
-dkt('trackEvent', 'form_submit', {
-  form_id: 'contact_form',
-  form_name: '聯絡表單'
+window.dkt('trackEvent', 'form_submit', {
+form_id: 'contact_form',
+form_name: '聯絡表單'
 });
 
 // 追蹤產品瀏覽
-dkt('trackEvent', 'product_view', {
-  product_id: '12345',
-  product_name: '商品名稱',
-  price: 1000
+window.dkt('trackEvent', 'product_view', {
+product_id: '12345',
+product_name: '商品名稱',
+price: 1000
 });
 
 // 追蹤購物車操作
-dkt('trackEvent', 'add_to_cart', {
-  product_id: '12345',
-  product_name: '商品名稱',
-  price: 1000,
-  quantity: 1
+window.dkt('trackEvent', 'add_to_cart', {
+product_id: '12345',
+product_name: '商品名稱',
+price: 1000,
+quantity: 1
 });
 
 // 追蹤購買完成
-dkt('trackEvent', 'purchase', {
-  transaction_id: 'TXN123456',
-  value: 2500,
-  currency: 'TWD',
-  items: [
-    {
-      product_id: '12345',
-      product_name: '商品A',
-      price: 1000,
-      quantity: 1
-    },
-    {
-      product_id: '67890',
-      product_name: '商品B',
-      price: 1500,
-      quantity: 1
-    }
-  ]
+window.dkt('trackEvent', 'purchase', {
+transaction_id: 'TXN123456',
+value: 2500,
+currency: 'TWD',
+items: [
+  {
+    product_id: '12345',
+    product_name: '商品A',
+    price: 1000,
+    quantity: 1
+  },
+  {
+    product_id: '67890',
+    product_name: '商品B',
+    price: 1500,
+    quantity: 1
+  }
+]
 });
 
 // 追蹤用戶註冊
-dkt('trackEvent', 'user_signup', {
-  method: 'email',
-  user_id: 'user123'
+window.dkt('trackEvent', 'user_signup', {
+method: 'email',
+user_id: 'user123'
 });
 
 // 追蹤頁面滾動
-dkt('trackEvent', 'scroll', {
-  scroll_depth: 75,
-  page_url: window.location.href
+window.dkt('trackEvent', 'scroll', {
+scroll_depth: 75,
+page_url: window.location.href
 });
 
 // 追蹤檔案下載
-dkt('trackEvent', 'file_download', {
-  file_name: 'product_catalog.pdf',
-  file_type: 'pdf',
-  file_size: '2.5MB'
+window.dkt('trackEvent', 'file_download', {
+file_name: 'product_catalog.pdf',
+file_type: 'pdf',
+file_size: '2.5MB'
 });
 
 // 追蹤影片播放
-dkt('trackEvent', 'video_play', {
-  video_title: '產品介紹影片',
-  video_duration: 120,
-  video_position: 0
+window.dkt('trackEvent', 'video_play', {
+video_title: '產品介紹影片',
+video_duration: 120,
+video_position: 0
 });
 
 // 追蹤搜尋行為
-dkt('trackEvent', 'search', {
-  search_term: '運動鞋',
-  search_results: 25
+window.dkt('trackEvent', 'search', {
+search_term: '運動鞋',
+search_results: 25
 });`}
                 </pre>
                 <Button
@@ -1035,93 +979,94 @@ dkt('trackEvent', 'search', {
                   className="absolute top-2 right-2"
                   onClick={() => {
                     navigator.clipboard.writeText(`// 追蹤按鈕點擊
-dkt('trackEvent', 'button_click', {
-  button_id: 'signup_button',
-  button_text: '立即註冊'
+window.dkt('trackEvent', 'button_click', {
+button_id: 'signup_button',
+button_text: '立即註冊'
 });
 
 // 追蹤表單提交
-dkt('trackEvent', 'form_submit', {
-  form_id: 'contact_form',
-  form_name: '聯絡表單'
+window.dkt('trackEvent', 'form_submit', {
+form_id: 'contact_form',
+form_name: '聯絡表單'
 });
 
 // 追蹤產品瀏覽
-dkt('trackEvent', 'product_view', {
-  product_id: '12345',
-  product_name: '商品名稱',
-  price: 1000
+window.dkt('trackEvent', 'product_view', {
+product_id: '12345',
+product_name: '商品名稱',
+price: 1000
 });
 
 // 追蹤購物車操作
-dkt('trackEvent', 'add_to_cart', {
-  product_id: '12345',
-  product_name: '商品名稱',
-  price: 1000,
-  quantity: 1
+window.dkt('trackEvent', 'add_to_cart', {
+product_id: '12345',
+product_name: '商品名稱',
+price: 1000,
+quantity: 1
 });
 
 // 追蹤購買完成
-dkt('trackEvent', 'purchase', {
-  transaction_id: 'TXN123456',
-  value: 2500,
-  currency: 'TWD',
-  items: [
-    {
-      product_id: '12345',
-      product_name: '商品A',
-      price: 1000,
-      quantity: 1
-    },
-    {
-      product_id: '67890',
-      product_name: '商品B',
-      price: 1500,
-      quantity: 1
-    }
-  ]
+window.dkt('trackEvent', 'purchase', {
+transaction_id: 'TXN123456',
+value: 2500,
+currency: 'TWD',
+items: [
+  {
+    product_id: '12345',
+    product_name: '商品A',
+    price: 1000,
+    quantity: 1
+  },
+  {
+    product_id: '67890',
+    product_name: '商品B',
+    price: 1500,
+    quantity: 1
+  }
+]
 });
 
 // 追蹤用戶註冊
-dkt('trackEvent', 'user_signup', {
-  method: 'email',
-  user_id: 'user123'
+window.dkt('trackEvent', 'user_signup', {
+method: 'email',
+user_id: 'user123'
 });
 
 // 追蹤頁面滾動
-dkt('trackEvent', 'scroll', {
-  scroll_depth: 75,
-  page_url: window.location.href
+window.dkt('trackEvent', 'scroll', {
+scroll_depth: 75,
+page_url: window.location.href
 });
 
 // 追蹤檔案下載
-dkt('trackEvent', 'file_download', {
-  file_name: 'product_catalog.pdf',
-  file_type: 'pdf',
-  file_size: '2.5MB'
+window.dkt('trackEvent', 'file_download', {
+file_name: 'product_catalog.pdf',
+file_type: 'pdf',
+file_size: '2.5MB'
 });
 
 // 追蹤影片播放
-dkt('trackEvent', 'video_play', {
-  video_title: '產品介紹影片',
-  video_duration: 120,
-  video_position: 0
+window.dkt('trackEvent', 'video_play', {
+video_title: '產品介紹影片',
+video_duration: 120,
+video_position: 0
 });
 
 // 追蹤搜尋行為
-dkt('trackEvent', 'search', {
-  search_term: '運動鞋',
-  search_results: 25
+window.dkt('trackEvent', 'search', {
+search_term: '運動鞋',
+search_results: 25
 });`)
                   }}
                 >
-                  複製
+                  {t("copy")}
                 </Button>
               </div>
             </div>
 
+            {/* Installation Instructions */}
             <div>
-              <h4 className="text-sm font-medium mb-2">安裝說明</h4>
+              <h4 className="text-sm font-medium mb-2">{t("installationInstructions")}</h4>
               <div className="bg-muted/30 p-4 rounded-md">
                 <ol className="list-decimal list-inside space-y-2 text-sm">
                   <li>將基本追蹤碼複製並貼到您網站的 &lt;head&gt; 標籤中</li>
@@ -1133,11 +1078,12 @@ dkt('trackEvent', 'search', {
               </div>
             </div>
 
+            {/* Common Event Types */}
             <div>
-              <h4 className="text-sm font-medium mb-2">常見事件類型</h4>
+              <h4 className="text-sm font-medium mb-2">{t("commonEventTypes")}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-muted/30 p-3 rounded-md">
-                  <h5 className="font-medium text-sm mb-2">電商事件</h5>
+                  <h5 className="font-medium text-sm mb-2">{t("ecommerceEvents")}</h5>
                   <ul className="text-xs space-y-1 text-muted-foreground">
                     <li>• product_view - 產品瀏覽</li>
                     <li>• add_to_cart - 加入購物車</li>
@@ -1146,7 +1092,7 @@ dkt('trackEvent', 'search', {
                   </ul>
                 </div>
                 <div className="bg-muted/30 p-3 rounded-md">
-                  <h5 className="font-medium text-sm mb-2">互動事件</h5>
+                  <h5 className="font-medium text-sm mb-2">{t("interactionEvents")}</h5>
                   <ul className="text-xs space-y-1 text-muted-foreground">
                     <li>• button_click - 按鈕點擊</li>
                     <li>• form_submit - 表單提交</li>
@@ -1155,7 +1101,7 @@ dkt('trackEvent', 'search', {
                   </ul>
                 </div>
                 <div className="bg-muted/30 p-3 rounded-md">
-                  <h5 className="font-medium text-sm mb-2">用戶事件</h5>
+                  <h5 className="font-medium text-sm mb-2">{t("userEvents")}</h5>
                   <ul className="text-xs space-y-1 text-muted-foreground">
                     <li>• user_signup - 用戶註冊</li>
                     <li>• user_login - 用戶登入</li>
@@ -1164,7 +1110,7 @@ dkt('trackEvent', 'search', {
                   </ul>
                 </div>
                 <div className="bg-muted/30 p-3 rounded-md">
-                  <h5 className="font-medium text-sm mb-2">內容事件</h5>
+                  <h5 className="font-medium text-sm mb-2">{t("contentEvents")}</h5>
                   <ul className="text-xs space-y-1 text-muted-foreground">
                     <li>• file_download - 檔案下載</li>
                     <li>• page_view - 頁面瀏覽</li>
@@ -1175,16 +1121,373 @@ dkt('trackEvent', 'search', {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 border rounded-md bg-muted/30">
-              <div>
-                <h5 className="font-medium">追蹤狀態</h5>
-                <p className="text-sm text-muted-foreground">網站追蹤碼已正確安裝並運行中</p>
+            {/* Tracking Status */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-md bg-muted/30">
+                <div>
+                  <h5 className="font-medium">{t("trackingStatus")}</h5>
+                  <p className="text-sm text-muted-foreground">{t("trackingCodeInstalledAndRunning")}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Switch
+                    checked={isVerifying}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        handleStartVerification()
+                      } else {
+                        handleStopVerification()
+                      }
+                    }}
+                  />
+                  <span className="text-sm">{isVerifying ? t("listeningForEvents") : t("enabled")}</span>
+                </div>
               </div>
-              <div className="flex items-center">
-                <div className="h-4 w-8 rounded-full bg-primary mr-2"></div>
-                <span className="text-sm">已啟用</span>
+
+              {/* Verification Status Display */}
+              {verificationStatus !== "idle" && (
+                <div className="p-3 rounded-md border-l-4 border-l-blue-500 bg-blue-50">
+                  {verificationStatus === "listening" && (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                      <span className="text-sm font-medium text-blue-700">{t("listeningForEvents")}</span>
+                    </div>
+                  )}
+
+                  {verificationStatus === "received" && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-4 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                        <span className="text-sm font-medium text-green-700">{t("trackingDataReceived")}</span>
+                      </div>
+                      {lastEvent && (
+                        <div className="mt-2 text-xs text-muted-foreground">
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="font-medium">{t("eventType")}:</span> {lastEvent.type}
+                            </div>
+                            <div>
+                              <span className="font-medium">{t("lastEventReceived")}:</span>{" "}
+                              {new Date(lastEvent.timestamp).toLocaleTimeString()}
+                            </div>
+                          </div>
+                          <div className="mt-1">
+                            <span className="font-medium">{t("eventDetails")}:</span>{" "}
+                            {JSON.stringify(lastEvent.details)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {verificationStatus === "timeout" && (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                        <X className="h-3 w-3 text-white" />
+                      </div>
+                      <span className="text-sm font-medium text-yellow-700">{t("noEventsDetected")}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* WooCommerce Management Dialog */}
+      <Dialog open={showWooCommerceManagement} onOpenChange={setShowWooCommerceManagement}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle>{t("wooCommercePluginManagement")}</DialogTitle>
+            <DialogDescription>{t("manageWooCommerceIntegration")}</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+            {/* Plugin Information */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("pluginVersion")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-lg font-mono">v2.1.3</div>
+                  <p className="text-xs text-muted-foreground mt-1">{t("latestVersion")}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("installationStatus")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm font-medium">{t("active")}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">{t("pluginActiveAndRunning")}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("lastSync")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-lg">2 {t("minutesAgo")}</div>
+                  <p className="text-xs text-muted-foreground mt-1">{t("autoSyncEnabled")}</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Installation Instructions */}
+            <div>
+              <h4 className="text-sm font-medium mb-2">{t("installationInstructions")}</h4>
+              <div className="bg-muted/30 p-4 rounded-md">
+                <ol className="list-decimal list-inside space-y-2 text-sm">
+                  <li>{t("downloadPluginFromWordPress")}</li>
+                  <li>{t("uploadAndActivatePlugin")}</li>
+                  <li>{t("enterTrackingIdInSettings")}</li>
+                  <li>{t("configureEventTracking")}</li>
+                  <li>{t("testPluginFunctionality")}</li>
+                </ol>
               </div>
             </div>
+
+            {/* Plugin Configuration */}
+            <div>
+              <h4 className="text-sm font-medium mb-2">{t("pluginConfiguration")}</h4>
+              <div className="relative">
+                <pre className="bg-muted p-4 rounded-md overflow-x-auto text-xs">
+                  {`// WooCommerce DKT Analytics Plugin Settings
+define('DKT_TRACKING_ID', '${currentTrackingId}');
+define('DKT_AUTO_TRACK_PURCHASES', true);
+define('DKT_AUTO_TRACK_ADD_TO_CART', true);
+define('DKT_AUTO_TRACK_PRODUCT_VIEWS', true);
+define('DKT_AUTO_TRACK_CHECKOUT_STEPS', true);
+
+// Advanced Settings
+define('DKT_TRACK_USER_ID', true);
+define('DKT_TRACK_CUSTOMER_LTV', true);
+define('DKT_ENHANCED_ECOMMERCE', true);`}
+                </pre>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`// WooCommerce DKT Analytics Plugin Settings
+define('DKT_TRACKING_ID', '${currentTrackingId}');
+define('DKT_AUTO_TRACK_PURCHASES', true);
+define('DKT_AUTO_TRACK_ADD_TO_CART', true);
+define('DKT_AUTO_TRACK_PRODUCT_VIEWS', true);
+define('DKT_AUTO_TRACK_CHECKOUT_STEPS', true);
+
+// Advanced Settings
+define('DKT_TRACK_USER_ID', true);
+define('DKT_TRACK_CUSTOMER_LTV', true);
+define('DKT_ENHANCED_ECOMMERCE', true);`)
+                  }}
+                >
+                  {t("copy")}
+                </Button>
+              </div>
+            </div>
+
+            {/* Tracked Events */}
+            <div>
+              <h4 className="text-sm font-medium mb-2">{t("automaticallyTrackedEvents")}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-muted/30 p-3 rounded-md">
+                  <h5 className="font-medium text-sm mb-2">{t("productEvents")}</h5>
+                  <ul className="text-xs space-y-1 text-muted-foreground">
+                    <li>• product_view - {t("productPageViews")}</li>
+                    <li>• add_to_cart - {t("addToCartActions")}</li>
+                    <li>• remove_from_cart - {t("removeFromCartActions")}</li>
+                    <li>• product_list_view - {t("categoryPageViews")}</li>
+                  </ul>
+                </div>
+                <div className="bg-muted/30 p-3 rounded-md">
+                  <h5 className="font-medium text-sm mb-2">{t("checkoutEvents")}</h5>
+                  <ul className="text-xs space-y-1 text-muted-foreground">
+                    <li>• checkout_start - {t("checkoutInitiated")}</li>
+                    <li>• checkout_progress - {t("checkoutSteps")}</li>
+                    <li>• purchase - {t("orderCompleted")}</li>
+                    <li>• refund - {t("orderRefunded")}</li>
+                  </ul>
+                </div>
+                <div className="bg-muted/30 p-3 rounded-md">
+                  <h5 className="font-medium text-sm mb-2">{t("userEvents")}</h5>
+                  <ul className="text-xs space-y-1 text-muted-foreground">
+                    <li>• user_register - {t("customerRegistration")}</li>
+                    <li>• user_login - {t("customerLogin")}</li>
+                    <li>• wishlist_add - {t("addToWishlist")}</li>
+                    <li>• review_submit - {t("productReviewSubmitted")}</li>
+                  </ul>
+                </div>
+                <div className="bg-muted/30 p-3 rounded-md">
+                  <h5 className="font-medium text-sm mb-2">{t("searchEvents")}</h5>
+                  <ul className="text-xs space-y-1 text-muted-foreground">
+                    <li>• search - {t("productSearch")}</li>
+                    <li>• search_results - {t("searchResultsViewed")}</li>
+                    <li>• filter_apply - {t("productFiltersApplied")}</li>
+                    <li>• sort_change - {t("productSortingChanged")}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Plugin Status */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-md bg-green-50">
+                <div>
+                  <h5 className="font-medium text-green-800">{t("pluginStatus")}</h5>
+                  <p className="text-sm text-green-600">{t("pluginActiveAndTracking")}</p>
+                </div>
+                <div className="flex items-center">
+                  <div className="h-4 w-8 rounded-full bg-green-500 mr-2"></div>
+                  <span className="text-sm text-green-800">{t("active")}</span>
+                </div>
+              </div>
+
+              {/* Recent Events */}
+              <div className="p-4 border rounded-md bg-muted/30">
+                <h5 className="font-medium mb-3">{t("recentEvents")}</h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span>purchase - Order #12345</span>
+                    <span className="text-muted-foreground">2 {t("minutesAgo")}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>add_to_cart - Product: 運動鞋</span>
+                    <span className="text-muted-foreground">5 {t("minutesAgo")}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>product_view - Product: 背包</span>
+                    <span className="text-muted-foreground">8 {t("minutesAgo")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Website Settings Dialog */}
+      <Dialog open={showWebsiteSettings} onOpenChange={setShowWebsiteSettings}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle>{t("websiteSettings")}</DialogTitle>
+            <DialogDescription>{t("manageWebsiteConfiguration")}</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+            {/* Website Information */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-medium">{t("websiteInformation")}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="websiteName">{t("websiteName")}</Label>
+                  <Input id="websiteName" value={editedName} onChange={(e) => setEditedName(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="websiteUrl">{t("websiteUrl")}</Label>
+                  <Input id="websiteUrl" value={editedUrl} onChange={(e) => setEditedUrl(e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Data Import Setup Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                    />
+                  </svg>
+                  {t("dataImportSetup")}
+                </CardTitle>
+                <CardDescription>{t("configureDataCollection")}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Integration Status Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg bg-muted/30 border-muted">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+                        <span className="font-medium">{t("websiteTracking")}</span>
+                      </div>
+                      <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">{t("active")}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">{t("collectingVisitorData")}</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowTrackingManagement(true)}
+                      className="mt-2"
+                    >
+                      <Code className="h-4 w-4 mr-2" />
+                      {t("manageCode")}
+                    </Button>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30 border-muted">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+                        <span className="font-medium">{t("wordpressIntegration")}</span>
+                      </div>
+                      <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">{t("active")}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">{t("trackingEcommerceEvents")}</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowWooCommerceManagement(true)}
+                      className="mt-2"
+                    >
+                      <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      {t("configure")}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setShowWebsiteSettings(false)}>
+              {t("cancel")}
+            </Button>
+            <Button
+              onClick={() => {
+                setSelectedWebsite({
+                  ...selectedWebsite,
+                  name: editedName,
+                  url: editedUrl,
+                })
+                setShowWebsiteSettings(false)
+              }}
+            >
+              {t("save")}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
