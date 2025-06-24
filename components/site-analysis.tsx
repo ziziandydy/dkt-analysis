@@ -1,12 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Edit, Check, X, Code, Plus } from "lucide-react"
+import { Edit, Check, X, Code, Plus, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { SettingsSelectors } from "@/components/settings-selectors"
 import { useTranslation } from "@/hooks/use-translation"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
@@ -419,22 +418,14 @@ export function SiteAnalysis() {
             {selectedWebsite ? (
               <>
                 <div className="flex items-center gap-2 mb-2">
-                  <Button variant="ghost" size="sm" onClick={() => setSelectedWebsite(null)} className="p-0 h-auto">
-                    {t("returnToWebsiteList")}
-                  </Button>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h1 className="text-3xl font-bold">{selectedWebsite.name}</h1>
-                      <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
-                        {t("siteAccountId")}: {selectedWebsite.accountId}
-                      </span>
-                    </div>
-                    <p className="text-muted-foreground">{selectedWebsite.url}</p>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={() => setShowWebsiteSettings(true)}>
-                    <Edit className="h-4 w-4 mr-1" /> {t("settings")}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedWebsite(null)}
+                    className="flex items-center gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Return To Website List
                   </Button>
                 </div>
               </>
@@ -454,11 +445,6 @@ export function SiteAnalysis() {
             )}
           </div>
         </div>
-        {selectedWebsite && (
-          <div className="flex justify-between items-center">
-            <SettingsSelectors />
-          </div>
-        )}
       </div>
 
       <Card>
@@ -724,6 +710,271 @@ export function SiteAnalysis() {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Audience Demographics Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Gender Distribution Chart */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium">性別分佈</CardTitle>
+                      <CardDescription>網站訪客性別統計</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { name: "男性", value: 58, color: "bg-blue-500" },
+                          { name: "女性", value: 39, color: "bg-pink-500" },
+                          { name: "未知", value: 3, color: "bg-gray-400" },
+                        ].map((item, index) => (
+                          <div key={index} className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium">{item.name}</span>
+                              <span className="text-sm font-semibold">{item.value}%</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div
+                                className={`rounded-full h-2 ${item.color}`}
+                                style={{ width: `${item.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Age Distribution Chart */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium">年齡分佈</CardTitle>
+                      <CardDescription>網站訪客年齡統計</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { name: "18-24", value: 22 },
+                          { name: "25-34", value: 35 },
+                          { name: "35-44", value: 28 },
+                          { name: "45-54", value: 12 },
+                          { name: "55+", value: 3 },
+                        ].map((item, index) => (
+                          <div key={index} className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium">{item.name}</span>
+                              <span className="text-sm font-semibold">{item.value}%</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div className="rounded-full h-2 bg-primary" style={{ width: `${item.value}%` }}></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Traffic Trends Chart */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg font-medium">流量趨勢</CardTitle>
+                    <CardDescription>過去30天網站流量變化</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64 flex items-end justify-between space-x-2">
+                      {[
+                        { day: "1", visits: 1200 },
+                        { day: "5", visits: 1450 },
+                        { day: "10", visits: 1680 },
+                        { day: "15", visits: 1320 },
+                        { day: "20", visits: 1890 },
+                        { day: "25", visits: 2100 },
+                        { day: "30", visits: 1950 },
+                      ].map((item, index) => (
+                        <div key={index} className="flex flex-col items-center space-y-2">
+                          <div
+                            className="bg-primary rounded-t w-8"
+                            style={{ height: `${(item.visits / 2500) * 200}px` }}
+                          ></div>
+                          <span className="text-xs text-muted-foreground">{item.day}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 text-center">
+                      <span className="text-sm text-muted-foreground">日期 (過去30天)</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Traffic Sources */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Source/Medium Chart */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium">流量來源</CardTitle>
+                      <CardDescription>訪客來源渠道分析</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { source: "google / organic", sessions: 45230, percentage: 42.5, color: "bg-green-500" },
+                          { source: "direct / (none)", sessions: 28940, percentage: 27.2, color: "bg-blue-500" },
+                          { source: "facebook / social", sessions: 15680, percentage: 14.7, color: "bg-blue-600" },
+                          { source: "google / cpc", sessions: 8920, percentage: 8.4, color: "bg-yellow-500" },
+                          { source: "其他", sessions: 7650, percentage: 7.2, color: "bg-gray-400" },
+                        ].map((item, index) => (
+                          <div key={index} className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <span className="text-sm font-medium">{item.source}</span>
+                                <div className="text-xs text-muted-foreground">
+                                  {item.sessions.toLocaleString()} 工作階段
+                                </div>
+                              </div>
+                              <span className="text-sm font-semibold">{item.percentage}%</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div
+                                className={`rounded-full h-2 ${item.color}`}
+                                style={{ width: `${item.percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Device Types */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium">裝置類型</CardTitle>
+                      <CardDescription>訪客使用裝置統計</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { device: "桌面電腦", sessions: 52340, percentage: 49.2, color: "bg-purple-500" },
+                          { device: "手機", sessions: 41280, percentage: 38.8, color: "bg-green-500" },
+                          { device: "平板", sessions: 12800, percentage: 12.0, color: "bg-orange-500" },
+                        ].map((item, index) => (
+                          <div key={index} className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <span className="text-sm font-medium">{item.device}</span>
+                                <div className="text-xs text-muted-foreground">
+                                  {item.sessions.toLocaleString()} 工作階段
+                                </div>
+                              </div>
+                              <span className="text-sm font-semibold">{item.percentage}%</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div
+                                className={`rounded-full h-2 ${item.color}`}
+                                style={{ width: `${item.percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Geographic Distribution */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg font-medium">地理位置分佈</CardTitle>
+                    <CardDescription>訪客地理位置統計</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[
+                        { location: "台北市", sessions: 28450, percentage: 26.8 },
+                        { location: "新北市", sessions: 18920, percentage: 17.8 },
+                        { location: "台中市", sessions: 15680, percentage: 14.7 },
+                        { location: "高雄市", sessions: 12340, percentage: 11.6 },
+                        { location: "桃園市", sessions: 9870, percentage: 9.3 },
+                        { location: "其他地區", sessions: 21160, percentage: 19.8 },
+                      ].map((item, index) => (
+                        <div key={index} className="p-3 border rounded-lg">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-medium">{item.location}</span>
+                            <span className="text-sm font-semibold text-primary">{item.percentage}%</span>
+                          </div>
+                          <div className="text-xs text-muted-foreground">{item.sessions.toLocaleString()} 工作階段</div>
+                          <div className="w-full bg-muted rounded-full h-1 mt-2">
+                            <div className="rounded-full h-1 bg-primary" style={{ width: `${item.percentage}%` }}></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Bounce Rate and Session Duration */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium">跳出率分析</CardTitle>
+                      <CardDescription>不同頁面跳出率統計</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { page: "首頁", bounceRate: 32.5, color: "bg-green-500" },
+                          { page: "產品頁", bounceRate: 28.9, color: "bg-green-600" },
+                          { page: "部落格", bounceRate: 45.2, color: "bg-yellow-500" },
+                          { page: "聯絡我們", bounceRate: 52.8, color: "bg-orange-500" },
+                          { page: "關於我們", bounceRate: 38.7, color: "bg-blue-500" },
+                        ].map((item, index) => (
+                          <div key={index} className="flex justify-between items-center">
+                            <span className="text-sm font-medium">{item.page}</span>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-20 bg-muted rounded-full h-2">
+                                <div
+                                  className={`rounded-full h-2 ${item.color}`}
+                                  style={{ width: `${item.bounceRate}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm font-semibold w-12">{item.bounceRate}%</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg font-medium">平均停留時間</CardTitle>
+                      <CardDescription>不同頁面平均停留時間</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { page: "產品頁", duration: "3:45", seconds: 225 },
+                          { page: "部落格", duration: "2:58", seconds: 178 },
+                          { page: "首頁", duration: "2:12", seconds: 132 },
+                          { page: "關於我們", duration: "1:48", seconds: 108 },
+                          { page: "聯絡我們", duration: "1:23", seconds: 83 },
+                        ].map((item, index) => (
+                          <div key={index} className="flex justify-between items-center">
+                            <span className="text-sm font-medium">{item.page}</span>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-20 bg-muted rounded-full h-2">
+                                <div
+                                  className="rounded-full h-2 bg-primary"
+                                  style={{ width: `${(item.seconds / 300) * 100}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm font-semibold w-12">{item.duration}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>
@@ -1455,7 +1706,7 @@ define('DKT_ENHANCED_ECOMMERCE', true);`)
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
                         />
                         <path
                           strokeLinecap="round"

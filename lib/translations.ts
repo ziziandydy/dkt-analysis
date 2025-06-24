@@ -35,6 +35,18 @@ export type TranslationKey =
   | "websiteUrl"
   | "siteAccountId"
   | "trackingId"
+  | "popularTopics"
+  | "relatedUsers"
+  | "clickForDetails"
+  | "returnToTopicList"
+  | "popularKeywords"
+  | "copyAllKeywords"
+  | "popularArticles"
+  | "marketingPersonas"
+  | "people"
+  | "returnToPersonaList"
+  | "keywords"
+  | "frequentlyViewedArticles"
   | (string & {}) // allow forward-compat keys
 
 /**
@@ -72,6 +84,18 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
   websiteUrl: { en: "Website URL", zh: "網站網址" },
   siteAccountId: { en: "Site Account ID", zh: "網站帳號ID" },
   trackingId: { en: "Tracking ID", zh: "追蹤ID" },
+  popularTopics: { en: "Popular Topics", zh: "熱門主題" },
+  relatedUsers: { en: "related users", zh: "相關用戶" },
+  clickForDetails: { en: "Click for details", zh: "點擊查看詳情" },
+  returnToTopicList: { en: "← Back to topics", zh: "← 返回主題列表" },
+  popularKeywords: { en: "Popular Keywords", zh: "熱門關鍵字" },
+  copyAllKeywords: { en: "Copy All", zh: "複製全部" },
+  popularArticles: { en: "Popular Articles", zh: "熱門文章" },
+  marketingPersonas: { en: "Marketing Personas", zh: "行銷人設" },
+  people: { en: "people", zh: "人" },
+  returnToPersonaList: { en: "← Back to personas", zh: "← 返回人設列表" },
+  keywords: { en: "Keywords", zh: "關鍵字" },
+  frequentlyViewedArticles: { en: "Frequently Viewed Articles", zh: "常閱讀文章" },
 } as const
 
 /**
