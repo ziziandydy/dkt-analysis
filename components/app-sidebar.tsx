@@ -14,7 +14,6 @@ import {
   LineChart,
   UserRound,
   ChevronDown,
-  Languages,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -36,8 +35,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useTranslation } from "@/hooks/use-translation"
 import { cn } from "@/lib/utils"
-import { useSettings, type Language } from "@/contexts/settings-context"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Mock user data - In a real app, this would come from authentication
 const mockUser = {
@@ -55,16 +52,16 @@ const analysisTypes = [
     path: "/dashboard",
   },
   {
+    id: "site",
+    nameKey: "siteAnalysis",
+    icon: UserRound,
+    path: "/site-analysis",
+  },
+  {
     id: "campaign",
     nameKey: "campaignAnalysis",
     icon: LineChart,
     path: "/campaign-analysis",
-  },
-  {
-    id: "customer",
-    nameKey: "customerAnalysis",
-    icon: UserRound,
-    path: "/customer-analysis",
   },
 ]
 
@@ -72,7 +69,6 @@ export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { t } = useTranslation()
-  const { language, setLanguage } = useSettings()
   const [user, setUser] = useState(mockUser)
 
   const isActive = (path: string) => pathname === path
@@ -193,28 +189,6 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("systemSettings")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <div className="flex items-center gap-2 px-2 py-1.5">
-                  <Languages className="h-5 w-5 text-muted-foreground" />
-                  <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
-                    <SelectTrigger className="h-8 w-[120px] border-none shadow-none focus:ring-0">
-                      <SelectValue placeholder="Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="EN">English</SelectItem>
-                      <SelectItem value="ZH">繁體中文</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
 
       <SidebarSeparator />

@@ -4,12 +4,16 @@ import { useState } from "react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { Languages } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "@/hooks/use-translation"
+import { useSettings, type Language } from "@/contexts/settings-context"
 
 // Mock user data
 const user = {
@@ -32,6 +36,8 @@ const passwordSchema = z
 
 export function AccountSettings() {
   const { toast } = useToast()
+  const { t } = useTranslation()
+  const { language, setLanguage } = useSettings()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof passwordSchema>>({
@@ -50,24 +56,32 @@ export function AccountSettings() {
     setTimeout(() => {
       setIsSubmitting(false)
       toast({
-        title: "Password updated",
-        description: "Your password has been updated successfully",
+        title: t("settingsSaved"),
+        description: t("siteSettingsUpdated"),
       })
       form.reset()
     }, 1500)
+  }
+
+  const handleLanguageChange = (newLanguage: Language) => {
+    setLanguage(newLanguage)
+    toast({
+      title: t("settingsSaved"),
+      description: newLanguage === "EN" ? "Language changed to English" : "語言已更改為繁體中文",
+    })
   }
 
   return (
     <div className="space-y-8 max-w-2xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Profile Information</CardTitle>
+          <CardTitle>{t("accountSettings")}</CardTitle>
           <CardDescription>View your account information</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Email</Label>
+              <Label>{t("email")}</Label>
               <p className="text-sm mt-1">{user.email}</p>
             </div>
             <div>
@@ -88,7 +102,38 @@ export function AccountSettings() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Change Password</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Languages className="h-5 w-5" />
+            Language Preferences
+          </CardTitle>
+          <CardDescription>Choose your preferred language for the interface</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="language">Interface Language</Label>
+              <Select value={language} onValueChange={handleLanguageChange}>
+                <SelectTrigger className="w-full mt-2">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="EN">English</SelectItem>
+                  <SelectItem value="ZH">繁體中文 (Traditional Chinese)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-2">
+                {language === "EN"
+                  ? "This will change the language for all interface elements."
+                  : "這將更改所有介面元素的語言。"}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("password")}</CardTitle>
           <CardDescription>Update your account password</CardDescription>
         </CardHeader>
         <Form {...form}>

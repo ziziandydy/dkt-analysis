@@ -1,6 +1,7 @@
 export type TranslationKey =
   | "pretargetingAnalysis"
   | "campaignAnalysis"
+  | "siteAnalysis"
   | "customerAnalysis"
   | "exploreAudiences"
   | "coreKeywords"
@@ -146,7 +147,107 @@ export type TranslationKey =
   | "analysisUpdated"
   | "analysisUpdatedDescription"
   | "hasBeenSaved"
-  | "systemSettings"
+  // Site Analysis specific translations
+  | "siteSettings"
+  | "manageSiteInfo"
+  | "siteName"
+  | "domainUrl"
+  | "trackingId"
+  | "viewTrackingCode"
+  | "trackingCode"
+  | "addToHeadTag"
+  | "copyCode"
+  | "wordpressPlugin"
+  | "active"
+  | "inactive"
+  | "verifyData"
+  | "saveSettings"
+  | "settingsSaved"
+  | "siteSettingsUpdated"
+  | "trackingCodeCopied"
+  | "trackingCodeCopiedDesc"
+  | "dataVerifying"
+  | "dataVerifyingDesc"
+  | "dataVerificationComplete"
+  | "dataVerificationSuccess"
+  | "overview"
+  | "userInsights"
+  | "behaviorAnalysis"
+  | "marketingPersonas"
+  | "totalUsers"
+  | "newUsers"
+  | "activeUsers"
+  | "previousPeriod"
+  | "trafficSources"
+  | "mainTrafficChannels"
+  | "directTraffic"
+  | "searchEngine"
+  | "socialMedia"
+  | "emailMarketing"
+  | "advertising"
+  | "others"
+  | "rfmSegmentation"
+  | "rfmDescription"
+  | "champions"
+  | "loyalCustomers"
+  | "potentialLoyalists"
+  | "promising"
+  | "needAttention"
+  | "aboutToSleep"
+  | "atRisk"
+  | "cannotLoseThem"
+  | "bestCustomers"
+  | "loyalCustomersDesc"
+  | "potentialLoyalCustomers"
+  | "promisingCustomers"
+  | "needAttentionDesc"
+  | "aboutToSleepDesc"
+  | "atRiskDesc"
+  | "cannotLoseThemDesc"
+  | "customerLifecycle"
+  | "lifecycleDescription"
+  | "awarenessStage"
+  | "considerationStage"
+  | "purchaseStage"
+  | "retentionStage"
+  | "loyaltyStage"
+  | "percentage"
+  | "userCount"
+  | "interestedTopics"
+  | "userInterestTopics"
+  | "relatedKeywords"
+  | "automotiveTech"
+  | "carMaintenance"
+  | "carBuyingGuide"
+  | "characteristics"
+  | "preferredChannels"
+  | "techEnthusiast"
+  | "pragmatist"
+  | "familyOriented"
+  | "techEnthusiastDesc"
+  | "pragmatistDesc"
+  | "familyOrientedDesc"
+  | "age25to40"
+  | "highIncome"
+  | "earlyAdopter"
+  | "valuesInnovation"
+  | "age30to50"
+  | "middleIncome"
+  | "rationalConsumer"
+  | "valuesQuality"
+  | "age28to45"
+  | "hasChildren"
+  | "safetyFirst"
+  | "needsSpace"
+  | "socialMediaChannels"
+  | "techWebsites"
+  | "youtube"
+  | "searchEngines"
+  | "automotiveForums"
+  | "wordOfMouth"
+  | "familyWebsites"
+  | "parentingCommunity"
+  | "siteId"
 
 export const translations: Record<TranslationKey, { en: string; zh: string }> = {
   pretargetingAnalysis: {
@@ -156,6 +257,10 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
   campaignAnalysis: {
     en: "Campaign Analysis",
     zh: "廣告活動分析",
+  },
+  siteAnalysis: {
+    en: "Site Analysis",
+    zh: "網站分析",
   },
   customerAnalysis: {
     en: "Customer Analysis",
@@ -737,9 +842,410 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
     en: "has been saved to your list",
     zh: "已保存到您的列表",
   },
-  systemSettings: {
-    en: "System Settings",
-    zh: "系統設置",
+  // Site Analysis specific translations
+  siteSettings: {
+    en: "Site Settings",
+    zh: "網站設定",
+  },
+  manageSiteInfo: {
+    en: "Manage your site basic information and tracking settings",
+    zh: "管理您的網站基本資訊和追蹤設定",
+  },
+  siteName: {
+    en: "Site Name",
+    zh: "網站名稱",
+  },
+  domainUrl: {
+    en: "Domain URL",
+    zh: "網域 URL",
+  },
+  trackingId: {
+    en: "Tracking ID",
+    zh: "追蹤 ID",
+  },
+  viewTrackingCode: {
+    en: "View Tracking Code",
+    zh: "查看追蹤代碼",
+  },
+  trackingCode: {
+    en: "Tracking Code",
+    zh: "追蹤代碼",
+  },
+  addToHeadTag: {
+    en: "Add this code to your website's <head> tag",
+    zh: "將此代碼添加到您網站的 <head> 標籤中",
+  },
+  copyCode: {
+    en: "Copy Code",
+    zh: "複製代碼",
+  },
+  wordpressPlugin: {
+    en: "WordPress Plugin",
+    zh: "WordPress 外掛",
+  },
+  active: {
+    en: "Active",
+    zh: "已啟用",
+  },
+  inactive: {
+    en: "Inactive",
+    zh: "未啟用",
+  },
+  verifyData: {
+    en: "Verify Data",
+    zh: "驗證數據",
+  },
+  saveSettings: {
+    en: "Save Settings",
+    zh: "儲存設定",
+  },
+  settingsSaved: {
+    en: "Settings Saved",
+    zh: "設定已儲存",
+  },
+  siteSettingsUpdated: {
+    en: "Site settings have been successfully updated",
+    zh: "網站設定已成功更新",
+  },
+  trackingCodeCopied: {
+    en: "Tracking Code Copied",
+    zh: "追蹤代碼已複製",
+  },
+  trackingCodeCopiedDesc: {
+    en: "Tracking code has been copied to clipboard",
+    zh: "追蹤代碼已複製到剪貼板",
+  },
+  dataVerifying: {
+    en: "Data Verification",
+    zh: "數據驗證中",
+  },
+  dataVerifyingDesc: {
+    en: "Verifying website data...",
+    zh: "正在驗證網站數據...",
+  },
+  dataVerificationComplete: {
+    en: "Data Verification Complete",
+    zh: "數據驗證完成",
+  },
+  dataVerificationSuccess: {
+    en: "Website data verification successful",
+    zh: "網站數據驗證成功",
+  },
+  overview: {
+    en: "Overview",
+    zh: "總覽",
+  },
+  userInsights: {
+    en: "User Insights",
+    zh: "用戶洞察",
+  },
+  behaviorAnalysis: {
+    en: "Behavior Analysis",
+    zh: "行為分析",
+  },
+  marketingPersonas: {
+    en: "Marketing Personas",
+    zh: "營銷人物角色",
+  },
+  totalUsers: {
+    en: "Total Users",
+    zh: "總用戶數",
+  },
+  newUsers: {
+    en: "New Users",
+    zh: "新用戶數",
+  },
+  activeUsers: {
+    en: "Active Users",
+    zh: "活躍用戶數",
+  },
+  previousPeriod: {
+    en: "vs previous period",
+    zh: "較前期",
+  },
+  trafficSources: {
+    en: "Traffic Sources",
+    zh: "流量來源分布",
+  },
+  mainTrafficChannels: {
+    en: "Main traffic channels to your website",
+    zh: "用戶訪問網站的主要來源渠道",
+  },
+  directTraffic: {
+    en: "Direct Traffic",
+    zh: "直接訪問",
+  },
+  searchEngine: {
+    en: "Search Engine",
+    zh: "搜尋引擎",
+  },
+  socialMedia: {
+    en: "Social Media",
+    zh: "社群媒體",
+  },
+  emailMarketing: {
+    en: "Email Marketing",
+    zh: "電子郵件",
+  },
+  advertising: {
+    en: "Advertising",
+    zh: "廣告",
+  },
+  others: {
+    en: "Others",
+    zh: "其他",
+  },
+  rfmSegmentation: {
+    en: "RFM Customer Segmentation",
+    zh: "RFM 客戶分群",
+  },
+  rfmDescription: {
+    en: "Customer segmentation based on Recency, Frequency, and Monetary value",
+    zh: "基於最近購買時間、頻率和金額的客戶分群",
+  },
+  champions: {
+    en: "Champions",
+    zh: "Champions",
+  },
+  loyalCustomers: {
+    en: "Loyal Customers",
+    zh: "Loyal Customers",
+  },
+  potentialLoyalists: {
+    en: "Potential Loyalists",
+    zh: "Potential Loyalists",
+  },
+  promising: {
+    en: "Promising",
+    zh: "Promising",
+  },
+  needAttention: {
+    en: "Need Attention",
+    zh: "Need Attention",
+  },
+  aboutToSleep: {
+    en: "About to Sleep",
+    zh: "About to Sleep",
+  },
+  atRisk: {
+    en: "At Risk",
+    zh: "At Risk",
+  },
+  cannotLoseThem: {
+    en: "Cannot Lose Them",
+    zh: "Cannot Lose Them",
+  },
+  bestCustomers: {
+    en: "Best customers",
+    zh: "最佳客戶",
+  },
+  loyalCustomersDesc: {
+    en: "Loyal customers",
+    zh: "忠誠客戶",
+  },
+  potentialLoyalCustomers: {
+    en: "Potential loyal customers",
+    zh: "潛在忠誠客戶",
+  },
+  newCustomers: {
+    en: "New customers",
+    zh: "新客戶",
+  },
+  promisingCustomers: {
+    en: "Promising customers",
+    zh: "有潛力客戶",
+  },
+  needAttentionDesc: {
+    en: "Need attention",
+    zh: "需要關注",
+  },
+  aboutToSleepDesc: {
+    en: "About to sleep",
+    zh: "即將流失",
+  },
+  atRiskDesc: {
+    en: "At risk",
+    zh: "流失風險",
+  },
+  cannotLoseThemDesc: {
+    en: "Cannot lose them",
+    zh: "不能失去",
+  },
+  customerLifecycle: {
+    en: "Customer Lifecycle",
+    zh: "客戶生命週期",
+  },
+  lifecycleDescription: {
+    en: "Distribution of users across different purchase stages",
+    zh: "用戶在不同購買階段的分布情況",
+  },
+  awarenessStage: {
+    en: "Awareness Stage",
+    zh: "認知階段",
+  },
+  considerationStage: {
+    en: "Consideration Stage",
+    zh: "考慮階段",
+  },
+  purchaseStage: {
+    en: "Purchase Stage",
+    zh: "購買階段",
+  },
+  retentionStage: {
+    en: "Retention Stage",
+    zh: "保留階段",
+  },
+  loyaltyStage: {
+    en: "Loyalty Stage",
+    zh: "忠誠階段",
+  },
+  percentage: {
+    en: "Percentage",
+    zh: "百分比",
+  },
+  userCount: {
+    en: "User Count",
+    zh: "用戶數",
+  },
+  interestedTopics: {
+    en: "Interested Topics",
+    zh: "用戶興趣主題",
+  },
+  userInterestTopics: {
+    en: "Topics and keywords that users are most interested in",
+    zh: "用戶最感興趣的內容主題和相關關鍵字",
+  },
+  relatedKeywords: {
+    en: "Related Keywords",
+    zh: "相關關鍵字",
+  },
+  automotiveTech: {
+    en: "Automotive Technology",
+    zh: "汽車科技",
+  },
+  carMaintenance: {
+    en: "Car Maintenance",
+    zh: "汽車保養",
+  },
+  carBuyingGuide: {
+    en: "Car Buying Guide",
+    zh: "購車指南",
+  },
+  characteristics: {
+    en: "Characteristics",
+    zh: "特徵",
+  },
+  preferredChannels: {
+    en: "Preferred Channels",
+    zh: "偏好渠道",
+  },
+  techEnthusiast: {
+    en: "Tech Enthusiast",
+    zh: "科技愛好者",
+  },
+  pragmatist: {
+    en: "Pragmatist",
+    zh: "實用主義者",
+  },
+  familyOriented: {
+    en: "Family Oriented",
+    zh: "家庭導向",
+  },
+  techEnthusiastDesc: {
+    en: "Interested in latest automotive technology, focuses on electric vehicles and smart features",
+    zh: "對最新汽車科技感興趣，關注電動車和智能功能",
+  },
+  pragmatistDesc: {
+    en: "Values practicality and cost-effectiveness, cares about maintenance and repairs",
+    zh: "注重汽車的實用性和性價比，關心保養和維修",
+  },
+  familyOrientedDesc: {
+    en: "Family-focused needs, prioritizes safety and space",
+    zh: "以家庭需求為主，關注安全性和空間",
+  },
+  age25to40: {
+    en: "Age 25-40",
+    zh: "年齡25-40歲",
+  },
+  highIncome: {
+    en: "High Income",
+    zh: "高收入",
+  },
+  earlyAdopter: {
+    en: "Early Adopter",
+    zh: "早期採用者",
+  },
+  valuesInnovation: {
+    en: "Values Innovation",
+    zh: "重視創新",
+  },
+  age30to50: {
+    en: "Age 30-50",
+    zh: "年齡30-50歲",
+  },
+  middleIncome: {
+    en: "Middle Income",
+    zh: "中等收入",
+  },
+  rationalConsumer: {
+    en: "Rational Consumer",
+    zh: "理性消費",
+  },
+  valuesQuality: {
+    en: "Values Quality",
+    zh: "重視品質",
+  },
+  age28to45: {
+    en: "Age 28-45",
+    zh: "年齡28-45歲",
+  },
+  hasChildren: {
+    en: "Has Children",
+    zh: "有子女",
+  },
+  safetyFirst: {
+    en: "Safety First",
+    zh: "安全第一",
+  },
+  needsSpace: {
+    en: "Needs Space",
+    zh: "空間需求大",
+  },
+  socialMediaChannels: {
+    en: "Social Media",
+    zh: "社群媒體",
+  },
+  techWebsites: {
+    en: "Tech Websites",
+    zh: "科技網站",
+  },
+  youtube: {
+    en: "YouTube",
+    zh: "YouTube",
+  },
+  searchEngines: {
+    en: "Search Engines",
+    zh: "搜尋引擎",
+  },
+  automotiveForums: {
+    en: "Automotive Forums",
+    zh: "汽車論壇",
+  },
+  wordOfMouth: {
+    en: "Word of Mouth",
+    zh: "口碑推薦",
+  },
+  familyWebsites: {
+    en: "Family Websites",
+    zh: "家庭網站",
+  },
+  parentingCommunity: {
+    en: "Parenting Community",
+    zh: "親子社群",
+  },
+  siteId: {
+    en: "Site ID",
+    zh: "Site ID",
   },
 }
 
