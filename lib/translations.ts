@@ -199,6 +199,7 @@ export type TranslationKey =
   | "bestCustomers"
   | "loyalCustomersDesc"
   | "potentialLoyalCustomers"
+  | "newCustomersDesc"
   | "promisingCustomers"
   | "needAttentionDesc"
   | "aboutToSleepDesc"
@@ -248,6 +249,96 @@ export type TranslationKey =
   | "familyWebsites"
   | "parentingCommunity"
   | "siteId"
+  // Onboarding specific translations
+  | "error"
+  | "success"
+  | "next"
+  | "back"
+  | "step"
+  | "of"
+  | "please_fill_all_fields"
+  | "please_select_tracking_method"
+  | "tracking_code_copied"
+  | "tracking_verified_successfully"
+  | "welcome_to_site_analysis"
+  | "add_your_first_website_to_start_tracking"
+  | "enter_site_name"
+  | "select_tracking_method"
+  | "choose_how_to_track_your_website"
+  | "tracking_code_setup"
+  | "add_this_code_to_your_website"
+  | "copy_code"
+  | "verifying"
+  | "verify_tracking"
+  | "install_klaviyo_plugin_for_wordpress"
+  | "wordpress_plugin_instructions"
+  | "download_klaviyo_plugin"
+  | "use_this_id_in_plugin_settings"
+  | "install_klaviyo_app_for_shopify"
+  | "shopify_app_instructions"
+  | "install_klaviyo_shopify_app"
+  | "use_this_id_in_app_settings"
+  | "setup_complete"
+  | "your_website_is_now_ready_for_analysis"
+  | "site_details"
+  | "tracking_method"
+  | "start_analysis"
+  | "platform"
+  | "last7Days"
+  | "last30Days"
+  | "last90Days"
+  | "customRange"
+  | "manageBrandsAndSettings"
+  | "manageUserRolesAndPermissions"
+  | "manageUserAccountsAndAccess"
+  | "brands"
+  | "addBrand"
+  | "addNewBrand"
+  | "createNewBrandDescription"
+  | "brandName"
+  | "enterBrandName"
+  | "enterDomainsCommaSeparated"
+  | "domainsExample"
+  | "logo"
+  | "uploadLogo"
+  | "brand"
+  | "apiKeys"
+  | "status"
+  | "brandAdded"
+  | "brandAddedSuccessfully"
+  | "brandDeleted"
+  | "brandDeletedSuccessfully"
+  | "roles"
+  | "addRole"
+  | "addNewRole"
+  | "createNewRoleDescription"
+  | "roleName"
+  | "enterRoleName"
+  | "description"
+  | "enterRoleDescription"
+  | "permissions"
+  | "role"
+  | "roleAdded"
+  | "roleAddedSuccessfully"
+  | "roleUpdated"
+  | "roleUpdatedSuccessfully"
+  | "roleDeleted"
+  | "roleDeletedSuccessfully"
+  | "editRole"
+  | "modifyRolePermissions"
+  | "saveChanges"
+  | "category"
+  | "roleAssignment"
+  | "assignRolesToUsers"
+  | "assignRolesDescription"
+  | "manageUserRoles"
+  | "roleTemplates"
+  | "createAndManageRoleTemplates"
+  | "roleTemplatesDescription"
+  | "manageTemplates"
+  | "dashboard"
+  | "edit"
+  | "create"
 
 export const translations: Record<TranslationKey, { en: string; zh: string }> = {
   pretargetingAnalysis: {
@@ -539,8 +630,8 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
     zh: "客戶群體細分",
   },
   newCustomers: {
-    en: "New Customers",
-    zh: "新客戶",
+    en: "New Users",
+    zh: "新用戶數",
   },
   returningCustomers: {
     en: "Returning Customers",
@@ -732,7 +823,7 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
   },
   analysisDeletedDescription: {
     en: "The analysis has been deleted successfully",
-    zh: "分析已成功刪除",
+    zh: "分析已成功刪除此分析。",
   },
   created: {
     en: "Created",
@@ -1007,10 +1098,6 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
     en: "Champions",
     zh: "Champions",
   },
-  loyalCustomers: {
-    en: "Loyal Customers",
-    zh: "Loyal Customers",
-  },
   potentialLoyalists: {
     en: "Potential Loyalists",
     zh: "Potential Loyalists",
@@ -1047,7 +1134,7 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
     en: "Potential loyal customers",
     zh: "潛在忠誠客戶",
   },
-  newCustomers: {
+  newCustomersDesc: {
     en: "New customers",
     zh: "新客戶",
   },
@@ -1246,6 +1333,363 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
   siteId: {
     en: "Site ID",
     zh: "Site ID",
+  },
+  // Onboarding specific translations
+  error: {
+    en: "Error",
+    zh: "錯誤",
+  },
+  success: {
+    en: "Success",
+    zh: "成功",
+  },
+  next: {
+    en: "Next",
+    zh: "下一步",
+  },
+  back: {
+    en: "Back",
+    zh: "返回",
+  },
+  step: {
+    en: "Step",
+    zh: "步驟",
+  },
+  of: {
+    en: "of",
+    zh: "的",
+  },
+  please_fill_all_fields: {
+    en: "Please fill all fields",
+    zh: "請填寫所有欄位",
+  },
+  please_select_tracking_method: {
+    en: "Please select a tracking method",
+    zh: "請選擇追蹤方法",
+  },
+  tracking_code_copied: {
+    en: "Tracking code copied",
+    zh: "追蹤代碼已複製",
+  },
+  tracking_verified_successfully: {
+    en: "Tracking verified successfully",
+    zh: "追蹤驗證成功",
+  },
+  welcome_to_site_analysis: {
+    en: "Welcome to Site Analysis",
+    zh: "歡迎使用網站分析",
+  },
+  add_your_first_website_to_start_tracking: {
+    en: "Add your first website to start tracking",
+    zh: "添加您的第一個網站以開始追蹤",
+  },
+  enter_site_name: {
+    en: "Enter Site Name",
+    zh: "輸入網站名稱",
+  },
+  select_tracking_method: {
+    en: "Select Tracking Method",
+    zh: "選擇追蹤方法",
+  },
+  choose_how_to_track_your_website: {
+    en: "Choose how to track your website",
+    zh: "選擇如何追蹤您的網站",
+  },
+  tracking_code_setup: {
+    en: "Tracking code setup",
+    zh: "追蹤代碼設置",
+  },
+  add_this_code_to_your_website: {
+    en: "Add this code to your website",
+    zh: "將此代碼添加到您的網站",
+  },
+  copy_code: {
+    en: "Copy Code",
+    zh: "複製代碼",
+  },
+  verifying: {
+    en: "Verifying",
+    zh: "驗證中",
+  },
+  verify_tracking: {
+    en: "Verify Tracking",
+    zh: "驗證追蹤",
+  },
+  install_klaviyo_plugin_for_wordpress: {
+    en: "Install Klaviyo Plugin for WordPress",
+    zh: "安裝 Klaviyo 外掛程式",
+  },
+  wordpress_plugin_instructions: {
+    en: "WordPress Plugin Instructions",
+    zh: "WordPress 外掛程式說明",
+  },
+  download_klaviyo_plugin: {
+    en: "Download Klaviyo Plugin",
+    zh: "下載 Klaviyo 外掛程式",
+  },
+  use_this_id_in_plugin_settings: {
+    en: "Use this ID in plugin settings",
+    zh: "在插件設置中使用此 ID",
+  },
+  install_klaviyo_app_for_shopify: {
+    en: "Install Klaviyo App for Shopify",
+    zh: "安裝 Klaviyo 應用程式",
+  },
+  shopify_app_instructions: {
+    en: "Shopify App Instructions",
+    zh: "Shopify 應用程式說明",
+  },
+  install_klaviyo_shopify_app: {
+    en: "Install Klaviyo Shopify App",
+    zh: "安裝 Klaviyo Shopify 應用程式",
+  },
+  use_this_id_in_app_settings: {
+    en: "Use this ID in app settings",
+    zh: "在應用程式設置中使用此 ID",
+  },
+  setup_complete: {
+    en: "Setup Complete",
+    zh: "設置完成",
+  },
+  your_website_is_now_ready_for_analysis: {
+    en: "Your website is now ready for analysis",
+    zh: "您的網站已準備好進行分析",
+  },
+  site_details: {
+    en: "Site Details",
+    zh: "網站詳情",
+  },
+  tracking_method: {
+    en: "Tracking Method",
+    zh: "追蹤方法",
+  },
+  start_analysis: {
+    en: "Start Analysis",
+    zh: "開始分析",
+  },
+  platform: {
+    en: "Platform",
+    zh: "平台",
+  },
+  last7Days: {
+    en: "Last 7 Days",
+    zh: "最近7天",
+  },
+  last30Days: {
+    en: "Last 30 Days",
+    zh: "最近30天",
+  },
+  last90Days: {
+    en: "Last 90 Days",
+    zh: "最近90天",
+  },
+  customRange: {
+    en: "Custom Range",
+    zh: "自訂範圍",
+  },
+  manageBrandsAndSettings: {
+    en: "Manage Brands and Settings",
+    zh: "管理品牌和設定",
+  },
+  manageUserRolesAndPermissions: {
+    en: "Manage User Roles and Permissions",
+    zh: "管理用戶角色和權限",
+  },
+  manageUserAccountsAndAccess: {
+    en: "Manage User Accounts and Access",
+    zh: "管理用戶帳戶和存取權限",
+  },
+  brands: {
+    en: "Brands",
+    zh: "品牌",
+  },
+  addBrand: {
+    en: "Add Brand",
+    zh: "添加品牌",
+  },
+  addNewBrand: {
+    en: "Add New Brand",
+    zh: "添加新品牌",
+  },
+  createNewBrandDescription: {
+    en: "Create a new brand description",
+    zh: "創建新品牌描述",
+  },
+  brandName: {
+    en: "Brand Name",
+    zh: "品牌名稱",
+  },
+  enterBrandName: {
+    en: "Enter Brand Name",
+    zh: "輸入品牌名稱",
+  },
+  enterDomainsCommaSeparated: {
+    en: "Enter domains comma separated",
+    zh: "輸入域名，用逗號分隔",
+  },
+  domainsExample: {
+    en: "e.g., example.com, subdomain.example.com",
+    zh: "例如：example.com, subdomain.example.com",
+  },
+  logo: {
+    en: "Logo",
+    zh: "標誌",
+  },
+  uploadLogo: {
+    en: "Upload Logo",
+    zh: "上傳標誌",
+  },
+  brand: {
+    en: "Brand",
+    zh: "品牌",
+  },
+  apiKeys: {
+    en: "API Keys",
+    zh: "API 密鑰",
+  },
+  status: {
+    en: "Status",
+    zh: "狀態",
+  },
+  brandAdded: {
+    en: "Brand Added",
+    zh: "品牌已添加",
+  },
+  brandAddedSuccessfully: {
+    en: "Brand has been added successfully",
+    zh: "品牌已成功添加",
+  },
+  brandDeleted: {
+    en: "Brand Deleted",
+    zh: "品牌已刪除",
+  },
+  brandDeletedSuccessfully: {
+    en: "Brand has been deleted successfully",
+    zh: "品牌已成功刪除",
+  },
+  roles: {
+    en: "Roles",
+    zh: "角色",
+  },
+  addRole: {
+    en: "Add Role",
+    zh: "新增角色",
+  },
+  addNewRole: {
+    en: "Add New Role",
+    zh: "新增角色",
+  },
+  createNewRoleDescription: {
+    en: "Create a new role with specific permissions",
+    zh: "建立具有特定權限的新角色",
+  },
+  roleName: {
+    en: "Role Name",
+    zh: "角色名稱",
+  },
+  enterRoleName: {
+    en: "Enter role name",
+    zh: "輸入角色名稱",
+  },
+  description: {
+    en: "Description",
+    zh: "描述",
+  },
+  enterRoleDescription: {
+    en: "Enter role description",
+    zh: "輸入角色描述",
+  },
+  permissions: {
+    en: "Permissions",
+    zh: "權限",
+  },
+  role: {
+    en: "Role",
+    zh: "角色",
+  },
+  roleAdded: {
+    en: "Role added",
+    zh: "角色已新增",
+  },
+  roleAddedSuccessfully: {
+    en: "Role has been added successfully",
+    zh: "角色已成功新增",
+  },
+  roleUpdated: {
+    en: "Role updated",
+    zh: "角色已更新",
+  },
+  roleUpdatedSuccessfully: {
+    en: "Role has been updated successfully",
+    zh: "角色已成功更新",
+  },
+  roleDeleted: {
+    en: "Role deleted",
+    zh: "角色已刪除",
+  },
+  roleDeletedSuccessfully: {
+    en: "Role has been deleted successfully",
+    zh: "角色已成功刪除",
+  },
+  editRole: {
+    en: "Edit Role",
+    zh: "編輯角色",
+  },
+  modifyRolePermissions: {
+    en: "Modify role permissions and details",
+    zh: "修改角色權限和詳細資訊",
+  },
+  saveChanges: {
+    en: "Save Changes",
+    zh: "儲存變更",
+  },
+  category: {
+    en: "Category",
+    zh: "類別",
+  },
+  roleAssignment: {
+    en: "Role Assignment",
+    zh: "角色分配",
+  },
+  assignRolesToUsers: {
+    en: "Assign roles to users",
+    zh: "為用戶分配角色",
+  },
+  assignRolesDescription: {
+    en: "Assign roles to users to control their access to features and data.",
+    zh: "為用戶分配角色以控制其對功能和數據的存取權限。",
+  },
+  manageUserRoles: {
+    en: "Manage User Roles",
+    zh: "管理用戶角色",
+  },
+  roleTemplates: {
+    en: "Role Templates",
+    zh: "角色範本",
+  },
+  createAndManageRoleTemplates: {
+    en: "Create and manage role templates",
+    zh: "建立和管理角色範本",
+  },
+  roleTemplatesDescription: {
+    en: "Create role templates to quickly assign common permission sets to new roles.",
+    zh: "建立角色範本以快速為新角色分配常用權限集。",
+  },
+  manageTemplates: {
+    en: "Manage Templates",
+    zh: "管理範本",
+  },
+  dashboard: {
+    en: "Dashboard",
+    zh: "儀表板",
+  },
+  edit: {
+    en: "Edit",
+    zh: "編輯",
+  },
+  create: {
+    en: "Create",
+    zh: "建立",
   },
 }
 

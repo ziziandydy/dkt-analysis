@@ -170,6 +170,17 @@ export function SiteAnalysis() {
     domain: "singmarket.com",
   })
   const [activeTab, setActiveTab] = useState("overview")
+  const [site, setSite] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const s = localStorage.getItem('trackedSite')
+      if (s) {
+        const userSite = JSON.parse(s)
+        // 合併 mock 結構，保留使用者輸入的 name/domain/method
+        return { ...getMockSiteData(t), ...userSite }
+      }
+    }
+    return null
+  })
 
   // Get localized mock data
   const mockSiteData = getMockSiteData(t)
@@ -214,6 +225,13 @@ export function SiteAnalysis() {
     }, 2000)
   }
 
+  const handleDeleteSite = () => {
+    localStorage.removeItem('trackedSite')
+    window.location.reload() // 重新整理回到 onboarding
+  }
+
+  if (!site) return null
+
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div>
@@ -233,15 +251,15 @@ export function SiteAnalysis() {
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-xl">{mockSiteData.siteName}</CardTitle>
+              <CardTitle className="text-xl">{site.name}</CardTitle>
               <CardDescription className="mt-2">
                 <div className="flex items-center gap-4 text-sm">
                   <span className="flex items-center gap-1">
                     <Globe className="h-4 w-4" />
-                    {mockSiteData.domain}
+                    {site.domain}
                   </span>
                   <span>
-                    {t("siteId")}: {mockSiteData.siteAccountId}
+                    {t("siteId")}: {site.siteAccountId}
                   </span>
                 </div>
               </CardDescription>
@@ -282,7 +300,7 @@ export function SiteAnalysis() {
                     <div className="flex justify-between items-center p-4 border rounded-lg">
                       <div>
                         <h4 className="font-medium">{t("trackingId")}</h4>
-                        <p className="text-sm text-muted-foreground">{mockSiteData.trackingId}</p>
+                        <p className="text-sm text-muted-foreground">{site.trackingId}</p>
                       </div>
                       <Dialog open={trackingCodeOpen} onOpenChange={setTrackingCodeOpen}>
                         <DialogTrigger asChild>
@@ -315,7 +333,7 @@ export function SiteAnalysis() {
                         <div>
                           <h4 className="font-medium">{t("wordpressPlugin")}</h4>
                           <div className="flex items-center gap-2">
-                            {mockSiteData.wordpressPluginActive ? (
+                            {site.wordpressPluginActive ? (
                               <>
                                 <Check className="h-4 w-4 text-green-500" />
                                 <span className="text-sm text-green-600">{t("active")}</span>
@@ -366,9 +384,9 @@ export function SiteAnalysis() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{mockSiteData.insights.totalUsers.toLocaleString()}</div>
+                <div className="text-2xl font-bold">{site.insights.totalUsers.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">
-                  {t("previousPeriod")} +{mockSiteData.insights.growth.totalUsers}%
+                  {t("previousPeriod")} +{site.insights.growth.totalUsers}%
                 </p>
               </CardContent>
             </Card>
@@ -378,9 +396,9 @@ export function SiteAnalysis() {
                 <UserPlus className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{mockSiteData.insights.newUsers.toLocaleString()}</div>
+                <div className="text-2xl font-bold">{site.insights.newUsers.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">
-                  {t("previousPeriod")} +{mockSiteData.insights.growth.newUsers}%
+                  {t("previousPeriod")} +{site.insights.growth.newUsers}%
                 </p>
               </CardContent>
             </Card>
@@ -390,9 +408,9 @@ export function SiteAnalysis() {
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{mockSiteData.insights.activeUsers.toLocaleString()}</div>
+                <div className="text-2xl font-bold">{site.insights.activeUsers.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">
-                  {t("previousPeriod")} +{mockSiteData.insights.growth.activeUsers}%
+                  {t("previousPeriod")} +{site.insights.growth.activeUsers}%
                 </p>
               </CardContent>
             </Card>
@@ -410,7 +428,7 @@ export function SiteAnalysis() {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={mockSiteData.sourceDistribution}
+                        data={site.sourceDistribution}
                         cx="50%"
                         cy="50%"
                         outerRadius={80}
@@ -418,7 +436,7 @@ export function SiteAnalysis() {
                         dataKey="value"
                         label={({ name, value }) => `${name} ${value}%`}
                       >
-                        {mockSiteData.sourceDistribution.map((entry, index) => (
+                        {site.sourceDistribution.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -427,7 +445,7 @@ export function SiteAnalysis() {
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-4">
-                  {mockSiteData.sourceDistribution.map((source, index) => (
+                  {site.sourceDistribution.map((source, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: source.color }} />
@@ -451,7 +469,7 @@ export function SiteAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {mockSiteData.rfmDistribution.map((segment, index) => (
+                {site.rfmDistribution.map((segment, index) => (
                   <div key={index} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="font-medium">{segment.segment}</h4>
@@ -472,7 +490,7 @@ export function SiteAnalysis() {
             </CardHeader>
             <CardContent className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={mockSiteData.lifeCycle}>
+                <BarChart data={site.lifeCycle}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="stage" />
                   <YAxis />
@@ -500,7 +518,7 @@ export function SiteAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {mockSiteData.interestedTopics.map((topic, index) => (
+                {site.interestedTopics.map((topic, index) => (
                   <div key={index} className="border rounded-lg p-4">
                     <div className="flex justify-between items-center mb-3">
                       <h4 className="text-lg font-medium">{topic.topic}</h4>
@@ -547,7 +565,7 @@ export function SiteAnalysis() {
         <TabsContent value="personas" className="space-y-6">
           {/* Marketing Personas */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {mockSiteData.marketingPersonas.map((persona, index) => (
+            {site.marketingPersonas.map((persona, index) => (
               <Card key={index}>
                 <CardHeader>
                   <div className="flex justify-between items-start">
@@ -584,6 +602,13 @@ export function SiteAnalysis() {
           </div>
         </TabsContent>
       </Tabs>
+
+      <button
+        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        onClick={handleDeleteSite}
+      >
+        刪除此網站並回到 Onboarding
+      </button>
     </div>
   )
 }

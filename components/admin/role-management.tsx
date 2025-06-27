@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "@/hooks/use-translation"
 
 // Mock data
 const mockRoles = [
@@ -129,6 +130,7 @@ const permissionCategories = [
 
 export function RoleManagement() {
   const { toast } = useToast()
+  const { t } = useTranslation()
   const [roles, setRoles] = useState(mockRoles)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -171,8 +173,8 @@ export function RoleManagement() {
     setIsAddDialogOpen(false)
 
     toast({
-      title: "Role added",
-      description: `${role.name} role has been added successfully`,
+      title: t("roleAdded"),
+      description: t("roleAddedSuccessfully"),
     })
   }
 
@@ -183,8 +185,8 @@ export function RoleManagement() {
     setIsEditDialogOpen(false)
 
     toast({
-      title: "Role updated",
-      description: `${currentRole.name} role has been updated successfully`,
+      title: t("roleUpdated"),
+      description: t("roleUpdatedSuccessfully"),
     })
   }
 
@@ -192,8 +194,8 @@ export function RoleManagement() {
     setRoles(roles.filter((role) => role.id !== id))
 
     toast({
-      title: "Role deleted",
-      description: "The role has been deleted successfully",
+      title: t("roleDeleted"),
+      description: t("roleDeletedSuccessfully"),
     })
   }
 
@@ -224,14 +226,14 @@ export function RoleManagement() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Category</TableHead>
-            <TableHead>Permissions</TableHead>
+            <TableHead>{t("category")}</TableHead>
+            <TableHead>{t("permissions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {permissionCategories.map((category) => (
             <TableRow key={category.id}>
-              <TableCell className="font-medium">{category.name}</TableCell>
+              <TableCell className="font-medium">{t(category.id as any)}</TableCell>
               <TableCell>
                 <div className="flex flex-wrap gap-4">
                   {category.permissions.map((permission) => (
@@ -243,7 +245,7 @@ export function RoleManagement() {
                           handlePermissionChange(roleData, category.id, permission.id, !!checked)
                         }
                       />
-                      <Label htmlFor={`${category.id}-${permission.id}`}>{permission.name}</Label>
+                      <Label htmlFor={`${category.id}-${permission.id}`}>{t(permission.id as any)}</Label>
                     </div>
                   ))}
                 </div>
@@ -258,49 +260,49 @@ export function RoleManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Roles</h2>
+        <h2 className="text-xl font-semibold">{t("roles")}</h2>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              <span>Add Role</span>
+              <span>{t("addRole")}</span>
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Add New Role</DialogTitle>
-              <DialogDescription>Create a new role with specific permissions</DialogDescription>
+              <DialogTitle>{t("addNewRole")}</DialogTitle>
+              <DialogDescription>{t("createNewRoleDescription")}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="role-name">Role Name</Label>
+                <Label htmlFor="role-name">{t("roleName")}</Label>
                 <Input
                   id="role-name"
                   value={newRole.name}
                   onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
-                  placeholder="Enter role name"
+                  placeholder={t("enterRoleName")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="role-description">Description</Label>
+                <Label htmlFor="role-description">{t("description")}</Label>
                 <Input
                   id="role-description"
                   value={newRole.description}
                   onChange={(e) => setNewRole({ ...newRole, description: e.target.value })}
-                  placeholder="Enter role description"
+                  placeholder={t("enterRoleDescription")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Permissions</Label>
+                <Label>{t("permissions")}</Label>
                 <div className="border rounded-md">{renderPermissionsTable(newRole)}</div>
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                {t("cancel")}
               </Button>
               <Button onClick={handleAddRole} disabled={!newRole.name}>
-                Add Role
+                {t("addRole")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -312,9 +314,9 @@ export function RoleManagement() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Role</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Users</TableHead>
+                <TableHead>{t("role")}</TableHead>
+                <TableHead>{t("description")}</TableHead>
+                <TableHead>{t("users")}</TableHead>
                 <TableHead className="w-[80px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -340,11 +342,11 @@ export function RoleManagement() {
                           }}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          <span>Edit</span>
+                          <span>{t("edit")}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDeleteRole(role.id)}>
                           <Trash className="mr-2 h-4 w-4" />
-                          <span>Delete</span>
+                          <span>{t("delete")}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -359,40 +361,40 @@ export function RoleManagement() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Edit Role</DialogTitle>
-            <DialogDescription>Modify role permissions and details</DialogDescription>
+            <DialogTitle>{t("editRole")}</DialogTitle>
+            <DialogDescription>{t("modifyRolePermissions")}</DialogDescription>
           </DialogHeader>
           {currentRole && (
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="edit-role-name">Role Name</Label>
+                <Label htmlFor="edit-role-name">{t("roleName")}</Label>
                 <Input
                   id="edit-role-name"
                   value={currentRole.name}
                   onChange={(e) => setCurrentRole({ ...currentRole, name: e.target.value })}
-                  placeholder="Enter role name"
+                  placeholder={t("enterRoleName")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-role-description">Description</Label>
+                <Label htmlFor="edit-role-description">{t("description")}</Label>
                 <Input
                   id="edit-role-description"
                   value={currentRole.description}
                   onChange={(e) => setCurrentRole({ ...currentRole, description: e.target.value })}
-                  placeholder="Enter role description"
+                  placeholder={t("enterRoleDescription")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Permissions</Label>
+                <Label>{t("permissions")}</Label>
                 <div className="border rounded-md">{renderPermissionsTable(currentRole)}</div>
               </div>
             </div>
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
-            <Button onClick={handleEditRole}>Save Changes</Button>
+            <Button onClick={handleEditRole}>{t("saveChanges")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -400,31 +402,31 @@ export function RoleManagement() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Role Assignment</CardTitle>
-            <CardDescription>Assign roles to users</CardDescription>
+            <CardTitle>{t("roleAssignment")}</CardTitle>
+            <CardDescription>{t("assignRolesToUsers")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Assign roles to users to control their access to features and data.
+              {t("assignRolesDescription")}
             </p>
             <Button variant="outline" className="mt-4">
               <Users className="mr-2 h-4 w-4" />
-              Manage User Roles
+              {t("manageUserRoles")}
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Role Templates</CardTitle>
-            <CardDescription>Create and manage role templates</CardDescription>
+            <CardTitle>{t("roleTemplates")}</CardTitle>
+            <CardDescription>{t("createAndManageRoleTemplates")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Create role templates to quickly assign common permission sets to new roles.
+              {t("roleTemplatesDescription")}
             </p>
             <Button variant="outline" className="mt-4">
-              Manage Templates
+              {t("manageTemplates")}
             </Button>
           </CardContent>
         </Card>

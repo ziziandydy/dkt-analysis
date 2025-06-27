@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "@/hooks/use-translation"
 
 // Mock data
 const mockBrands = [
@@ -62,6 +63,7 @@ const mockBrands = [
 
 export function BrandManagement() {
   const { toast } = useToast()
+  const { t } = useTranslation()
   const [brands, setBrands] = useState(mockBrands)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [newBrand, setNewBrand] = useState({
@@ -87,8 +89,8 @@ export function BrandManagement() {
     setIsAddDialogOpen(false)
 
     toast({
-      title: "Brand added",
-      description: `${brand.name} has been added successfully`,
+      title: t("brandAdded"),
+      description: t("brandAddedSuccessfully", { name: brand.name }),
     })
   }
 
@@ -96,49 +98,49 @@ export function BrandManagement() {
     setBrands(brands.filter((brand) => brand.id !== id))
 
     toast({
-      title: "Brand deleted",
-      description: "The brand has been deleted successfully",
+      title: t("brandDeleted"),
+      description: t("brandDeletedSuccessfully"),
     })
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Brands</h2>
+        <h2 className="text-xl font-semibold">{t("brands")}</h2>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              <span>Add Brand</span>
+              <span>{t("addBrand")}</span>
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Brand</DialogTitle>
-              <DialogDescription>Create a new brand to manage users and API access</DialogDescription>
+              <DialogTitle>{t("addNewBrand")}</DialogTitle>
+              <DialogDescription>{t("createNewBrandDescription")}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="brand-name">Brand Name</Label>
+                <Label htmlFor="brand-name">{t("brandName")}</Label>
                 <Input
                   id="brand-name"
                   value={newBrand.name}
                   onChange={(e) => setNewBrand({ ...newBrand, name: e.target.value })}
-                  placeholder="Enter brand name"
+                  placeholder={t("enterBrandName")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="brand-domains">Domains</Label>
+                <Label htmlFor="brand-domains">{t("domains")}</Label>
                 <Input
                   id="brand-domains"
                   value={newBrand.domains}
                   onChange={(e) => setNewBrand({ ...newBrand, domains: e.target.value })}
-                  placeholder="Enter domains (comma separated)"
+                  placeholder={t("enterDomainsCommaSeparated")}
                 />
-                <p className="text-xs text-muted-foreground">Example: example.com, example.co.jp</p>
+                <p className="text-xs text-muted-foreground">{t("domainsExample")}</p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="brand-logo">Logo</Label>
+                <Label htmlFor="brand-logo">{t("logo")}</Label>
                 <div className="flex items-center gap-2">
                   <Input id="brand-logo" type="file" className="hidden" />
                   <Button
@@ -147,17 +149,17 @@ export function BrandManagement() {
                     onClick={() => document.getElementById("brand-logo")?.click()}
                   >
                     <Upload className="h-4 w-4 mr-2" />
-                    Upload Logo
+                    {t("uploadLogo")}
                   </Button>
                 </div>
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                {t("cancel")}
               </Button>
               <Button onClick={handleAddBrand} disabled={!newBrand.name || !newBrand.domains}>
-                Add Brand
+                {t("addBrand")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -170,11 +172,11 @@ export function BrandManagement() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[50px]"></TableHead>
-                <TableHead>Brand</TableHead>
-                <TableHead>Domains</TableHead>
-                <TableHead>API Keys</TableHead>
-                <TableHead>Users</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{t("brand")}</TableHead>
+                <TableHead>{t("domains")}</TableHead>
+                <TableHead>{t("apiKeys")}</TableHead>
+                <TableHead>{t("users")}</TableHead>
+                <TableHead>{t("status")}</TableHead>
                 <TableHead className="w-[80px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -202,11 +204,10 @@ export function BrandManagement() {
                   <TableCell>{brand.users}</TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        brand.status === "Active"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
-                      }`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${brand.status === "Active"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                        : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+                        }`}
                     >
                       {brand.status}
                     </span>
@@ -222,11 +223,11 @@ export function BrandManagement() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          <span>Edit</span>
+                          <span>{t("edit")}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDeleteBrand(brand.id)}>
                           <Trash className="mr-2 h-4 w-4" />
-                          <span>Delete</span>
+                          <span>{t("delete")}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -241,51 +242,51 @@ export function BrandManagement() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>API Management</CardTitle>
-            <CardDescription>Manage API keys and access</CardDescription>
+            <CardTitle>{t("apiManagement")}</CardTitle>
+            <CardDescription>{t("manageApiKeysAndAccess")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Create and manage API keys for brands to access the platform programmatically.
+              {t("createAndManageApiKeysDescription")}
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full">
-              Manage API Keys
+              {t("manageApiKeys")}
             </Button>
           </CardFooter>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Domain Verification</CardTitle>
-            <CardDescription>Verify brand domains</CardDescription>
+            <CardTitle>{t("domainVerification")}</CardTitle>
+            <CardDescription>{t("verifyBrandDomains")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Verify domain ownership to ensure secure access for brand users.
+              {t("verifyDomainOwnershipDescription")}
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full">
-              Verify Domains
+              {t("verifyDomains")}
             </Button>
           </CardFooter>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Brand Settings</CardTitle>
-            <CardDescription>Configure brand settings</CardDescription>
+            <CardTitle>{t("brandSettings")}</CardTitle>
+            <CardDescription>{t("configureBrandSettings")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Customize settings, permissions, and features available to each brand.
+              {t("customizeBrandSettingsDescription")}
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full">
-              Configure Settings
+              {t("configureSettings")}
             </Button>
           </CardFooter>
         </Card>

@@ -80,17 +80,17 @@ export function CampaignAnalysis() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Campaign Analysis</CardTitle>
-          <CardDescription>瀏覽和分析您的DKT和ADGP廣告活動效果</CardDescription>
+          <CardTitle>{t("campaignAnalysis")}</CardTitle>
+          <CardDescription>{t("optimizeStrategy")}</CardDescription>
         </CardHeader>
         <CardContent>
           {!selectedCampaign ? (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">您的廣告活動</h3>
+                <h3 className="text-lg font-medium">{t("campaignPerformance")}</h3>
                 <Button variant="outline" size="sm">
                   <Search className="h-4 w-4 mr-2" />
-                  搜尋廣告活動
+                  {t("searchAnalyses")}
                 </Button>
               </div>
               <div className="grid gap-4">
@@ -112,24 +112,24 @@ export function CampaignAnalysis() {
                         </Badge>
                       </div>
                       <CardDescription>
-                        平台: {campaign.platform} • 預算: NT${campaign.spend.toLocaleString()}
+                        {t("platform")}: {campaign.platform} • {t("budgetSpent")}: NT${campaign.spend.toLocaleString()}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="pb-2">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm font-medium">曝光數</p>
+                          <p className="text-sm font-medium">{t("impressions")}</p>
                           <p className="text-2xl font-bold">{campaign.impressions.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">點擊數</p>
+                          <p className="text-sm font-medium">{t("clicks")}</p>
                           <p className="text-2xl font-bold">{campaign.clicks.toLocaleString()}</p>
                         </div>
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-end pt-0">
                       <Button variant="default" size="sm" onClick={() => setSelectedCampaign(campaign.id)}>
-                        查看詳情
+                        {t("view")}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -142,63 +142,63 @@ export function CampaignAnalysis() {
                 <div>
                   <h3 className="text-xl font-bold">{campaigns.find((c) => c.id === selectedCampaign)?.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    平台: {campaigns.find((c) => c.id === selectedCampaign)?.platform}
+                    {t("platform")}: {campaigns.find((c) => c.id === selectedCampaign)?.platform}
                   </p>
                 </div>
                 <Button variant="outline" onClick={() => setSelectedCampaign(null)}>
-                  返回列表
+                  {t("back")}
                 </Button>
               </div>
 
               <div className="flex justify-between items-center">
-                <h4 className="text-lg font-medium">效能概覽</h4>
+                <h4 className="text-lg font-medium">{t("campaignMetrics")}</h4>
                 <select
                   className="px-3 py-1 border rounded-md"
                   value={timeframe}
                   onChange={(e) => setTimeframe(e.target.value)}
                 >
-                  <option value="last-7-days">過去7天</option>
-                  <option value="last-30-days">過去30天</option>
-                  <option value="last-90-days">過去90天</option>
-                  <option value="custom">自訂時間範圍</option>
+                  <option value="last-7-days">{t("last7Days")}</option>
+                  <option value="last-30-days">{t("last30Days")}</option>
+                  <option value="last-90-days">{t("last90Days")}</option>
+                  <option value="custom">{t("customRange")}</option>
                 </select>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">曝光數</CardTitle>
+                    <CardTitle className="text-sm">{t("impressions")}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">2.5M</div>
-                    <p className="text-xs text-muted-foreground">較前期 +12.4%</p>
+                    <p className="text-xs text-muted-foreground">{t("previousPeriod")} +12.4%</p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">點擊數</CardTitle>
+                    <CardTitle className="text-sm">{t("clicks")}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">75K</div>
-                    <p className="text-xs text-muted-foreground">較前期 +8.7%</p>
+                    <p className="text-xs text-muted-foreground">{t("previousPeriod")} +8.7%</p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">點擊率</CardTitle>
+                    <CardTitle className="text-sm">{t("ctr")}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">3.0%</div>
-                    <p className="text-xs text-muted-foreground">較前期 -0.3%</p>
+                    <p className="text-xs text-muted-foreground">{t("previousPeriod")} -0.3%</p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">轉換數</CardTitle>
+                    <CardTitle className="text-sm">{t("conversions")}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">1.2K</div>
-                    <p className="text-xs text-muted-foreground">較前期 +15.2%</p>
+                    <p className="text-xs text-muted-foreground">{t("previousPeriod")} +15.2%</p>
                   </CardContent>
                 </Card>
               </div>
