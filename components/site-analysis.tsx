@@ -27,6 +27,7 @@ import {
   Code,
   WorkflowIcon as Wordpress,
   RefreshCw,
+  Store,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -158,6 +159,46 @@ const getMockSiteData = (t: any) => ({
       preferredChannels: [t("familyWebsites"), t("parentingCommunity"), t("emailMarketing")],
     },
   ],
+  mbtiDistribution: [
+    { name: 'INTJ', value: 12 },
+    { name: 'INTP', value: 8 },
+    { name: 'ENTJ', value: 10 },
+    { name: 'ENTP', value: 7 },
+    { name: 'INFJ', value: 6 },
+    { name: 'INFP', value: 9 },
+    { name: 'ENFJ', value: 5 },
+    { name: 'ENFP', value: 8 },
+    { name: 'ISTJ', value: 7 },
+    { name: 'ISFJ', value: 6 },
+    { name: 'ESTJ', value: 5 },
+    { name: 'ESFJ', value: 4 },
+    { name: 'ISTP', value: 4 },
+    { name: 'ISFP', value: 3 },
+    { name: 'ESTP', value: 3 },
+    { name: 'ESFP', value: 3 },
+  ],
+  mbtiPreferences: [
+    {
+      group: 'Extroversion vs Introversion',
+      left: { key: 'E', label: 'E (Extrovert)', value: 58 },
+      right: { key: 'I', label: 'I (Introvert)', value: 42 },
+    },
+    {
+      group: 'Sensing vs Intuition',
+      left: { key: 'S', label: 'S (Sensing)', value: 46 },
+      right: { key: 'N', label: 'N (Intuition)', value: 54 },
+    },
+    {
+      group: 'Thinking vs Feeling',
+      left: { key: 'T', label: 'T (Thinking)', value: 62 },
+      right: { key: 'F', label: 'F (Feeling)', value: 38 },
+    },
+    {
+      group: 'Judging vs Perceiving',
+      left: { key: 'J', label: 'J (Judging)', value: 51 },
+      right: { key: 'P', label: 'P (Perceiving)', value: 49 },
+    },
+  ],
 })
 
 export function SiteAnalysis() {
@@ -165,9 +206,25 @@ export function SiteAnalysis() {
   const { toast } = useToast()
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [trackingCodeOpen, setTrackingCodeOpen] = useState(false)
-  const [siteSettings, setSiteSettings] = useState({
-    siteName: "阿興買菜網",
-    domain: "singmarket.com",
+  const [siteSettings, setSiteSettings] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const s = localStorage.getItem('trackedSite')
+      if (s) {
+        const userSite = JSON.parse(s)
+        return {
+          siteName: userSite.name || '',
+          domain: userSite.domain || '',
+          trackingMethod: userSite.trackingMethod || '',
+          trackingId: userSite.trackingId || '',
+        }
+      }
+    }
+    return {
+      siteName: '',
+      domain: '',
+      trackingMethod: '',
+      trackingId: '',
+    }
   })
   const [activeTab, setActiveTab] = useState("overview")
   const [site, setSite] = useState(() => {
@@ -196,6 +253,17 @@ export function SiteAnalysis() {
 
   const handleSaveSettings = () => {
     // Mock save functionality
+    // 同步 localStorage
+    if (typeof window !== 'undefined') {
+      const trackedSite = {
+        name: siteSettings.siteName,
+        domain: siteSettings.domain,
+        trackingMethod: siteSettings.trackingMethod,
+        trackingId: siteSettings.trackingId,
+        verified: true,
+      }
+      localStorage.setItem('trackedSite', JSON.stringify(trackedSite))
+    }
     toast({
       title: t("settingsSaved"),
       description: t("siteSettingsUpdated"),
@@ -295,62 +363,113 @@ export function SiteAnalysis() {
                       />
                     </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>{t("tracking_method")}</Label>
+                      <div>
+                        <Badge variant="secondary">
+                          {siteSettings.trackingMethod === 'code' && t("trackingCode")}
+                          {siteSettings.trackingMethod === 'wordpress' && 'WordPress'}
+                          {siteSettings.trackingMethod === 'shopify' && 'Shopify'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
 
+                  {/* Tracking Method Blocks */}
                   <div className="space-y-4">
+                    {/* Tracking Code Block */}
                     <div className="flex justify-between items-center p-4 border rounded-lg">
                       <div>
                         <h4 className="font-medium">{t("trackingId")}</h4>
-                        <p className="text-sm text-muted-foreground">{site.trackingId}</p>
+                        <p className="text-sm text-muted-foreground">{siteSettings.trackingId}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant={siteSettings.trackingMethod === 'code' ? 'default' : 'secondary'}>
+                            {siteSettings.trackingMethod === 'code' ? t('active') : t('inactive')}
+                          </Badge>
+                        </div>
                       </div>
-                      <Dialog open={trackingCodeOpen} onOpenChange={setTrackingCodeOpen}>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <Code className="h-4 w-4 mr-2" />
-                            {t("viewTrackingCode")}
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-3xl">
-                          <DialogHeader>
-                            <DialogTitle>{t("trackingCode")}</DialogTitle>
-                            <DialogDescription>{t("addToHeadTag")}</DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="bg-muted p-4 rounded-lg">
-                              <pre className="text-sm overflow-x-auto">{trackingCode}</pre>
-                            </div>
-                            <Button onClick={handleCopyTrackingCode} className="w-full">
-                              <Copy className="h-4 w-4 mr-2" />
-                              {t("copyCode")}
+                      <div className="flex gap-2">
+                        <Dialog open={trackingCodeOpen} onOpenChange={setTrackingCodeOpen}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Code className="h-4 w-4 mr-2" />
+                              {t("viewTrackingCode")}
                             </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-3xl">
+                            <DialogHeader>
+                              <DialogTitle>{t("trackingCode")}</DialogTitle>
+                              <DialogDescription>{t("addToHeadTag")}</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div className="bg-muted p-4 rounded-lg">
+                                <pre className="text-sm overflow-x-auto">{trackingCode}</pre>
+                              </div>
+                              <Button onClick={handleCopyTrackingCode} className="w-full">
+                                <Copy className="h-4 w-4 mr-2" />
+                                {t("copyCode")}
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        <Button variant="outline" size="sm" onClick={handleVerifyData}>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          {t("verifyData")}
+                        </Button>
+                      </div>
                     </div>
 
+                    {/* WordPress Plugin Block */}
                     <div className="flex justify-between items-center p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
                         <Wordpress className="h-8 w-8 text-blue-600" />
                         <div>
                           <h4 className="font-medium">{t("wordpressPlugin")}</h4>
                           <div className="flex items-center gap-2">
-                            {site.wordpressPluginActive ? (
-                              <>
-                                <Check className="h-4 w-4 text-green-500" />
-                                <span className="text-sm text-green-600">{t("active")}</span>
-                              </>
-                            ) : (
-                              <>
-                                <X className="h-4 w-4 text-red-500" />
-                                <span className="text-sm text-red-600">{t("inactive")}</span>
-                              </>
-                            )}
+                            <Badge variant={siteSettings.trackingMethod === 'wordpress' ? 'default' : 'secondary'}>
+                              {siteSettings.trackingMethod === 'wordpress' ? t('active') : t('inactive')}
+                            </Badge>
                           </div>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" onClick={handleVerifyData}>
-                        <RefreshCw className="h-4 w-4 mr-2" />
-                        {t("verifyData")}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="icon" asChild>
+                          <a href="https://wordpress.org/plugins/klaviyo/" target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-5 w-5" />
+                          </a>
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleVerifyData}>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          {t("verifyData")}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Shopify App Block */}
+                    <div className="flex justify-between items-center p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Store className="h-8 w-8 text-green-600" />
+                        <div>
+                          <h4 className="font-medium">Shopify App</h4>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={siteSettings.trackingMethod === 'shopify' ? 'default' : 'secondary'}>
+                              {siteSettings.trackingMethod === 'shopify' ? t('active') : t('inactive')}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="icon" asChild>
+                          <a href="https://apps.shopify.com/klaviyo" target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-5 w-5" />
+                          </a>
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleVerifyData}>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          {t("verifyData")}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -370,9 +489,11 @@ export function SiteAnalysis() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-6">
           <TabsTrigger value="overview">{t("overview")}</TabsTrigger>
-          <TabsTrigger value="users">{t("userInsights")}</TabsTrigger>
-          <TabsTrigger value="behavior">{t("behaviorAnalysis")}</TabsTrigger>
-          <TabsTrigger value="personas">{t("marketingPersonas")}</TabsTrigger>
+          <TabsTrigger value="customer">Customer</TabsTrigger>
+          <TabsTrigger value="denographic">Demographic</TabsTrigger>
+          <TabsTrigger value="topic">Topic</TabsTrigger>
+          <TabsTrigger value="persona">Persona</TabsTrigger>
+          <TabsTrigger value="mbti">MBTI</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -460,7 +581,7 @@ export function SiteAnalysis() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="users" className="space-y-6">
+        <TabsContent value="customer" className="space-y-6">
           {/* RFM Distribution */}
           <Card>
             <CardHeader>
@@ -509,7 +630,58 @@ export function SiteAnalysis() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="behavior" className="space-y-6">
+        <TabsContent value="denographic" className="space-y-6">
+          {/* Demographic charts */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 年齡分布長條圖 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("ageDistribution")}</CardTitle>
+                <CardDescription>{t("ageBreakdown")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={site.demographics.age}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            {/* 性別分布圓餅圖 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("genderDistribution")}</CardTitle>
+                <CardDescription>{t("genderBreakdown")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={site.demographics.gender}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      label
+                    >
+                      {site.demographics.gender.map((entry, index) => (
+                        <Cell key={`cell-gender-${index}`} fill={["#8884d8", "#82ca9d", "#ffc658"][index % 3]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="topic" className="space-y-6">
           {/* Interested Topics */}
           <Card>
             <CardHeader>
@@ -562,7 +734,7 @@ export function SiteAnalysis() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="personas" className="space-y-6">
+        <TabsContent value="persona" className="space-y-6">
           {/* Marketing Personas */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {site.marketingPersonas.map((persona, index) => (
@@ -600,6 +772,38 @@ export function SiteAnalysis() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="mbti" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>MBTI Distribution</CardTitle>
+              <CardDescription>MBTI preferences of your target audience</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {site.mbtiPreferences.map((pair, idx) => (
+                  <div key={pair.group} className="space-y-6">
+                    <div className="text-center font-medium mb-2">{pair.group}</div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span>{pair.left.label}</span>
+                      <span className="bg-muted px-2 py-0.5 rounded text-xs font-semibold text-gray-700">{pair.left.value}%</span>
+                    </div>
+                    <div className="w-full h-3 bg-gray-200 rounded-full mb-4">
+                      <div className="h-3 bg-blue-500 rounded-full" style={{ width: `${pair.left.value}%` }}></div>
+                    </div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span>{pair.right.label}</span>
+                      <span className="bg-muted px-2 py-0.5 rounded text-xs font-semibold text-gray-700">{pair.right.value}%</span>
+                    </div>
+                    <div className="w-full h-3 bg-gray-200 rounded-full">
+                      <div className="h-3 bg-blue-500 rounded-full" style={{ width: `${pair.right.value}%` }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 

@@ -90,7 +90,7 @@ export function BrandManagement() {
 
     toast({
       title: t("brandAdded"),
-      description: t("brandAddedSuccessfully", { name: brand.name }),
+      description: t("brandAddedSuccessfully"),
     })
   }
 

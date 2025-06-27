@@ -339,6 +339,22 @@ export type TranslationKey =
   | "dashboard"
   | "edit"
   | "create"
+  | "domains"
+  | "apiManagement"
+  | "manageApiKeysAndAccess"
+  | "createAndManageApiKeysDescription"
+  | "manageApiKeys"
+  | "domainVerification"
+  | "verifyBrandDomains"
+  | "verifyDomainOwnershipDescription"
+  | "verifyDomains"
+  | "brandSettings"
+  | "configureBrandSettings"
+  | "customizeBrandSettingsDescription"
+  | "configureSettings"
+  | "analytics"
+  | "generate"
+  | "verify_hint"
 
 export const translations: Record<TranslationKey, { en: string; zh: string }> = {
   pretargetingAnalysis: {
@@ -1691,8 +1707,89 @@ export const translations: Record<TranslationKey, { en: string; zh: string }> = 
     en: "Create",
     zh: "建立",
   },
+  domains: {
+    en: "Domains",
+    zh: "域名",
+  },
+  apiManagement: {
+    en: "API Management",
+    zh: "API 管理",
+  },
+  manageApiKeysAndAccess: {
+    en: "Manage API Keys and Access",
+    zh: "管理 API 密鑰和存取權限",
+  },
+  createAndManageApiKeysDescription: {
+    en: "Create and manage API keys to secure access to your APIs",
+    zh: "建立和管理 API 密鑰以保護對您的 API 的存取",
+  },
+  manageApiKeys: {
+    en: "Manage API Keys",
+    zh: "管理 API 密鑰",
+  },
+  domainVerification: {
+    en: "Domain Verification",
+    zh: "域名驗證",
+  },
+  verifyBrandDomains: {
+    en: "Verify Brand Domains",
+    zh: "驗證品牌域名",
+  },
+  verifyDomainOwnershipDescription: {
+    en: "Verify domain ownership to ensure your brand's authenticity",
+    zh: "驗證域名所有權以確保品牌的真實性",
+  },
+  verifyDomains: {
+    en: "Verify Domains",
+    zh: "驗證域名",
+  },
+  brandSettings: {
+    en: "Brand Settings",
+    zh: "品牌設定",
+  },
+  configureBrandSettings: {
+    en: "Configure Brand Settings",
+    zh: "配置品牌設定",
+  },
+  customizeBrandSettingsDescription: {
+    en: "Customize your brand settings to better target your audience",
+    zh: "自訂您的品牌設定以更好地定位您的受眾",
+  },
+  configureSettings: {
+    en: "Configure Settings",
+    zh: "配置設定",
+  },
+  analytics: {
+    en: "Analytics",
+    zh: "分析",
+  },
+  generate: {
+    en: "Generate",
+    zh: "產生"
+  },
+  verify_hint: {
+    en: "Please visit your website and try to trigger any event (such as click or page view). The system will automatically verify if the tracking code is installed correctly.",
+    zh: "請到您的網站瀏覽並嘗試觸發任一事件（如點擊、瀏覽頁面等），系統將自動驗證追蹤碼是否安裝成功。"
+  },
 }
 
-export function useTranslation(key: TranslationKey, language: "EN" | "ZH"): string {
-  return translations[key][language.toLowerCase() as "en" | "zh"]
+export function getTranslation(key: TranslationKey, language: "EN" | "ZH"): string {
+  try {
+    const translation = translations[key]
+    if (!translation) {
+      console.warn(`Translation key "${key}" not found`)
+      return key
+    }
+
+    const lang = language.toLowerCase() as "en" | "zh"
+    if (!translation[lang]) {
+      console.warn(`Language "${lang}" not found for key "${key}"`)
+      return translation.en || key
+    }
+
+    return translation[lang]
+  } catch (error) {
+    console.error(`Error getting translation for key "${key}":`, error)
+    return key
+  }
 }
