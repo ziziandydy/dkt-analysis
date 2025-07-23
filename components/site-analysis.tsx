@@ -201,12 +201,20 @@ const getMockSiteData = (t: any) => ({
   ],
 })
 
-export function SiteAnalysis() {
+export function SiteAnalysis({ site: propSite }: { site?: any } = {}) {
   const { t } = useTranslation()
   const { toast } = useToast()
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [trackingCodeOpen, setTrackingCodeOpen] = useState(false)
   const [siteSettings, setSiteSettings] = useState(() => {
+    if (propSite) {
+      return {
+        siteName: propSite.name || '',
+        domain: propSite.domain || '',
+        trackingMethod: propSite.trackingMethod || '',
+        trackingId: propSite.trackingId || '',
+      }
+    }
     if (typeof window !== 'undefined') {
       const s = localStorage.getItem('trackedSite')
       if (s) {
@@ -228,11 +236,13 @@ export function SiteAnalysis() {
   })
   const [activeTab, setActiveTab] = useState("overview")
   const [site, setSite] = useState(() => {
+    if (propSite) {
+      return { ...getMockSiteData(t), ...propSite }
+    }
     if (typeof window !== 'undefined') {
       const s = localStorage.getItem('trackedSite')
       if (s) {
         const userSite = JSON.parse(s)
-        // 合併 mock 結構，保留使用者輸入的 name/domain/method
         return { ...getMockSiteData(t), ...userSite }
       }
     }
@@ -557,7 +567,7 @@ export function SiteAnalysis() {
                         dataKey="value"
                         label={({ name, value }) => `${name} ${value}%`}
                       >
-                        {site.sourceDistribution.map((entry, index) => (
+                        {site.sourceDistribution.map((entry: any, index: any) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -566,7 +576,7 @@ export function SiteAnalysis() {
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-4">
-                  {site.sourceDistribution.map((source, index) => (
+                  {site.sourceDistribution.map((source: any, index: any) => (
                     <div key={index} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: source.color }} />
@@ -590,7 +600,7 @@ export function SiteAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {site.rfmDistribution.map((segment, index) => (
+                {site.rfmDistribution.map((segment: any, index: any) => (
                   <div key={index} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="font-medium">{segment.segment}</h4>
@@ -669,7 +679,7 @@ export function SiteAnalysis() {
                       outerRadius={80}
                       label
                     >
-                      {site.demographics.gender.map((entry, index) => (
+                      {site.demographics.gender.map((entry: any, index: any) => (
                         <Cell key={`cell-gender-${index}`} fill={["#8884d8", "#82ca9d", "#ffc658"][index % 3]} />
                       ))}
                     </Pie>
@@ -690,7 +700,7 @@ export function SiteAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {site.interestedTopics.map((topic, index) => (
+                {site.interestedTopics.map((topic: any, index: any) => (
                   <div key={index} className="border rounded-lg p-4">
                     <div className="flex justify-between items-center mb-3">
                       <h4 className="text-lg font-medium">{topic.topic}</h4>
@@ -701,7 +711,7 @@ export function SiteAnalysis() {
                       <div>
                         <h5 className="font-medium mb-2">{t("relatedKeywords")}</h5>
                         <div className="flex flex-wrap gap-2">
-                          {topic.keywords.map((keyword, kidx) => (
+                          {topic.keywords.map((keyword: any, kidx: any) => (
                             <Badge key={kidx} variant="secondary">
                               {keyword}
                             </Badge>
@@ -712,7 +722,7 @@ export function SiteAnalysis() {
                       <div>
                         <h5 className="font-medium mb-2">{t("relatedArticles")}</h5>
                         <div className="space-y-2">
-                          {topic.articles.map((article, aidx) => (
+                          {topic.articles.map((article: any, aidx: any) => (
                             <a
                               key={aidx}
                               href={article.url}
@@ -737,7 +747,7 @@ export function SiteAnalysis() {
         <TabsContent value="persona" className="space-y-6">
           {/* Marketing Personas */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {site.marketingPersonas.map((persona, index) => (
+            {site.marketingPersonas.map((persona: any, index: any) => (
               <Card key={index}>
                 <CardHeader>
                   <div className="flex justify-between items-start">
@@ -750,7 +760,7 @@ export function SiteAnalysis() {
                   <div>
                     <h5 className="font-medium mb-2">{t("characteristics")}</h5>
                     <div className="space-y-1">
-                      {persona.characteristics.map((char, cidx) => (
+                      {persona.characteristics.map((char: any, cidx: any) => (
                         <div key={cidx} className="text-sm text-muted-foreground">
                           • {char}
                         </div>
@@ -761,7 +771,7 @@ export function SiteAnalysis() {
                   <div>
                     <h5 className="font-medium mb-2">{t("preferredChannels")}</h5>
                     <div className="flex flex-wrap gap-1">
-                      {persona.preferredChannels.map((channel, chidx) => (
+                      {persona.preferredChannels.map((channel: any, chidx: any) => (
                         <Badge key={chidx} variant="secondary" className="text-xs">
                           {channel}
                         </Badge>
@@ -782,7 +792,7 @@ export function SiteAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {site.mbtiPreferences.map((pair, idx) => (
+                {site.mbtiPreferences.map((pair: any, idx: any) => (
                   <div key={pair.group} className="space-y-6">
                     <div className="text-center font-medium mb-2">{pair.group}</div>
                     <div className="flex items-center justify-between mb-1">

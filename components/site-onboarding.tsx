@@ -65,6 +65,14 @@ export function SiteOnboarding({ onComplete }: SiteOnboardingProps) {
             verified: true,
         }
         localStorage.setItem('trackedSite', JSON.stringify(siteData))
+        // 新增：同步寫入 trackedSites 陣列
+        const arr = localStorage.getItem('trackedSites')
+        let sites = arr ? JSON.parse(arr) : []
+        const id = trackingId
+        if (!sites.find((s: any) => s.id === id)) {
+            sites.push({ ...siteData, id })
+            localStorage.setItem('trackedSites', JSON.stringify(sites))
+        }
         onComplete()
     }
 
