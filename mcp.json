@@ -1,0 +1,19 @@
+{
+    "mcpServers": {
+        "TalkToFigma": {
+            "command": "bunx",
+            "args": [
+                "cursor-talk-to-figma-mcp@latest"
+            ]
+        },
+        "Framelink Figma MCP": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "figma-developer-mcp",
+                "--figma-api-key=figd_FjJ2cFNJ-Fp0ddGDcoxQnLkA8wjdiPK4jAQFs6Zd",
+                "--stdio"
+            ]
+        }
+    }
+}

@@ -8,7 +8,10 @@
 - dashboard/page.tsx: 儀表板
 - analyses/page.tsx: 分析總覽
 - campaign-analysis/page.tsx: 活動分析
-- site-analysis/page.tsx: 網站分析
+- site-analysis/
+  - page.tsx: Site 列表頁（多站點管理，進入自動產生 mock data，含新增/刪除/查看分析）
+  - new/page.tsx: 新增 Site Analysis（onboarding 流程，完成後自動導向分析頁）
+  - [siteId]/page.tsx: 單一 Site 分析頁（根據 siteId 顯示對應數據，含回列表按鈕）
 - account/settings/page.tsx: 帳號設定
 - admin/
   - accounts/page.tsx: 帳號管理
@@ -23,6 +26,7 @@
 - 儲存/匯出對話框：save-analysis-dialog.tsx, export-dialog.tsx
 - 設定元件：account-settings.tsx, settings-selectors.tsx
 - 列表：saved-analyses-list.tsx
+- onboarding：site-onboarding.tsx（多站點支援，onComplete 寫入 trackedSites 陣列）
 - admin/
   - account-management.tsx: 帳號管理（CRUD）
   - brand-management.tsx: 品牌管理
@@ -55,5 +59,6 @@
 - 多語系支援
 - 通知提示
 - 行動裝置適應
+- Site Analysis 多站點管理（列表、新增、刪除、mock data 自動產生、回列表）
 
 # END 
